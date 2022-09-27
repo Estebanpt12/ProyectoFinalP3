@@ -10,10 +10,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-public class HelloApplication extends Application {
+public class CasaSubastas extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        URL url = new File("src/main/java/co/edu/uniquindio/casasubastas/views/hello-view.fxml").toURI().toURL();
+        URL url = new File("src/main/java/co/edu/uniquindio/casasubastas/views/main-view.fxml").toURI().toURL();
         Parent root = FXMLLoader.load(url);
         Scene scene = new Scene(root, 320, 240);
         stage.setTitle("Hello!");
