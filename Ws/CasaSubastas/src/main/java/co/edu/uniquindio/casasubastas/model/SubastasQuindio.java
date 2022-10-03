@@ -4,9 +4,57 @@ import co.edu.uniquindio.casasubastas.exceptions.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class SubastasQuindio {
+
+    public static void main(String[] args) {
+        SubastasQuindio subastasQuindio = new SubastasQuindio();
+        try {
+            subastasQuindio.crearAnunciante("penaeste", "1234", "Esteban", 19);
+        } catch (InvalidUserException e) {
+            e.printStackTrace();
+        } catch (ExistingUserException e) {
+            e.printStackTrace();
+        }
+        try {
+           subastasQuindio.crearComprador("penaeste1", "1234", "Esteban1", 19);
+        } catch (InvalidUserException e) {
+            e.printStackTrace();
+        } catch (ExistingUserException e) {
+            e.printStackTrace();
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2022, 10, 02, 00,00,00);
+        Date fInicio = calendar.getTime();
+        calendar.set(2023, 10, 02, 00,00,00);
+        Date fFin = calendar.getTime();
+        try {
+            subastasQuindio.crearProducto("Electro", "Micro", "prueba",
+                                            new File("co/edu/uniquindio/casasubastas/views/main-view.fxml"), fInicio
+                                            , fFin, 10000, "Esteban");
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvalidUserException e) {
+            e.printStackTrace();
+        } catch (ProductsLimitException e) {
+            e.printStackTrace();
+        }
+        try {
+            subastasQuindio.crearPuja("Micro", "penaeste1", 50000, fInicio);
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvalidUserException e) {
+            e.printStackTrace();
+        } catch (ProductNotFoundException e) {
+            e.printStackTrace();
+        } catch (ProductsLimitException e) {
+            e.printStackTrace();
+        } catch (InsufficientBidException e){
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Lista usuarios
@@ -56,7 +104,7 @@ public class SubastasQuindio {
     }
 
     /**
-     * Metodo para creear un anunciante
+     * Metodo para crear un anunciante
      * @param usuario usuario de la aplicacion del anunciante
      * @param contrasenia contrasenia de la aplicacion del anunciante
      * @param nombre nombre del anunciante
@@ -65,7 +113,7 @@ public class SubastasQuindio {
      * @throws ExistingUserException Valida si el usuario ya existe
      */
     public void crearAnunciante(String usuario, String contrasenia, String nombre, int edad) throws InvalidUserException, ExistingUserException{
-        if(edad >= 18){
+        if(edad < 18){
             throw new InvalidUserException("El usuario no es mayor de edad");
         }
         for (Usuario usuario1: usuarios){
@@ -80,6 +128,7 @@ public class SubastasQuindio {
         usuario1.setNombre(nombre);
         usuario1.setEdad(edad);
         usuario1.setiUsuario(anunciante);
+        usuarios.add(usuario1);
     }
 
     /**
@@ -92,7 +141,7 @@ public class SubastasQuindio {
      * @throws ExistingUserException Valida si el usuario ya existe
      */
     public void crearComprador(String usuario, String contrasenia, String nombre, int edad) throws InvalidUserException, ExistingUserException{
-        if(edad >= 18){
+        if(edad < 18){
             throw new InvalidUserException("El usuario no es mayor de edad");
         }
         for (Usuario usuario1: usuarios){
@@ -107,6 +156,7 @@ public class SubastasQuindio {
         usuario1.setNombre(nombre);
         usuario1.setEdad(edad);
         usuario1.setiUsuario(comprador);
+        usuarios.add(usuario1);
     }
 
     /**
@@ -119,9 +169,11 @@ public class SubastasQuindio {
      * @throws InvalidUserException Se valida la cantidad de pujas y el tipo de usuario
      * @throws ProductNotFoundException Se valida si el producto no existe
      * @throws ProductsLimitException Se valida la cantidad limite de anuncios del usuario
+     * @throws InsufficientBidException Se valida si el valor pujado es valido
      */
     public void crearPuja(String nombreProducto, String usuarioPujante, double valorPujado,
-                          Date fecha) throws UserNotFoundException, InvalidUserException, ProductNotFoundException, ProductsLimitException {
+                          Date fecha) throws UserNotFoundException, InvalidUserException, ProductNotFoundException,
+                            ProductsLimitException, InsufficientBidException {
         for(int i = 0; i<usuarios.size(); i++){
             if(validarPujante(usuarios.get(i), usuarioPujante)){
                 usuarios.get(i).getiUsuario().aniadirProducto(nombreProducto);
@@ -132,8 +184,17 @@ public class SubastasQuindio {
         }
         for(int i = 0; i < productos.size(); i++){
             if(productos.get(i).getNombre().equals(nombreProducto)){
-                productos.get(i).agregarPuja(usuarioPujante, valorPujado, fecha);
-                break;
+                if(productos.get(i).getValorInicial() <= valorPujado){
+                    productos.get(i).agregarPuja(usuarioPujante, valorPujado, fecha);
+                    break;
+                }else{
+                    for(Usuario usuario : usuarios){
+                        if(usuario.getUsuario().equals(usuarioPujante)) {
+                            usuario.getiUsuario().eliminarProducto(nombreProducto);
+                        }
+                    }
+                    throw new InsufficientBidException("Valor pujado es menor al valor inicial");
+                }
             }else if(i == productos.size()-1){
                 for(Usuario usuario : usuarios){
                     if(usuario.getUsuario().equals(usuarioPujante)) {
@@ -175,7 +236,7 @@ public class SubastasQuindio {
         producto.setNombre(nombre);
         producto.setDescripcion(descripcion);
         producto.setFoto(foto);
-        producto.setFechaFin(fInicio);
+        producto.setFechaInicio(fInicio);
         producto.setFechaFin(fFin);
         producto.setValorInicial(vInicial);
         producto.setVendido(false);

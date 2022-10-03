@@ -55,7 +55,7 @@ public class Anunciante implements IUsuario {
      */
     @Override
     public boolean validarCantidadProductos() {
-        return false;
+        return listaProductos.size() < 5;
     }
 
     /**
