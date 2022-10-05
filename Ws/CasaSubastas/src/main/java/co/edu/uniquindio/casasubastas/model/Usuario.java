@@ -1,6 +1,8 @@
 package co.edu.uniquindio.casasubastas.model;
 
-import co.edu.uniquindio.casasubastas.services.IUsuario;
+import co.edu.uniquindio.casasubastas.model.services.IUsuario;
+
+import java.util.ArrayList;
 
 public class Usuario {
 
@@ -28,6 +30,12 @@ public class Usuario {
      * Interfaz para asignar el tipo de usuario
      */
     private IUsuario iUsuario;
+
+
+    /**
+     * Lista donde se guardan los nombre de los productos
+     */
+    ArrayList<String> listaProductos = new ArrayList<>();
 
     /**
      * Constructor vacio de la clase
@@ -115,18 +123,52 @@ public class Usuario {
     }
 
     /**
-     * Metodo para validar la cantidad limite de productos
-     * @return retorna si la cantidad de productos se ha sobrepasado o no
+     * Metodo para tomar la lista de productos
+     * @return Lista de productos publicados por el anunciante
      */
-    public boolean validarCantidadProductos(){
-        return iUsuario.validarCantidadProductos();
+    public ArrayList<String> getlistaProductos() {
+        return listaProductos;
     }
 
     /**
-     * Metodo para validar el tipo de usuario
-     * @return retorna true si el usuario es comprador y false si el usuario es anunciante
+     * Metodo para asignar la lista de productos
+     * @param listaProductos Lista de productos publicados por el anunciante
      */
-    public boolean validarTipoUsuario(){
-        return  iUsuario.validarTipoUsuario();
+    public void setlistaProductos(ArrayList<String> listaProductos) {
+        this.listaProductos = listaProductos;
+    }
+
+    /**
+     * Metodo para validar la cantidad limite de productos
+     * @return retorna si la cantidad de productos se ha sobrepasado o no
+     */
+    public boolean validarCantidadProductos(String nombreProducto){
+        if(iUsuario instanceof Anunciante){
+            return iUsuario.validarCantidadProductos(listaProductos.size());
+        }else{
+            int auxiliar = 0;
+            for( String element : listaProductos){
+                if(element.equals(nombreProducto)){
+                    auxiliar+=1;
+                }
+            }
+            return iUsuario.validarCantidadProductos(auxiliar);
+        }
+    }
+
+    /**
+     * Metodo para aniadir un producto
+     * @param nombre nombre del producto a aniadir
+     */
+    public void aniadirProducto(String nombre){
+        listaProductos.add(nombre);
+    }
+
+    /**
+     * Metodo para eliminar un producto
+     * @param nombre Nombre del producto a eliminar
+     */
+    public void eliminarProducto(String nombre) {
+        listaProductos.remove(nombre);
     }
 }

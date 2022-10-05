@@ -1,15 +1,18 @@
 package co.edu.uniquindio.casasubastas.model;
 
-import co.edu.uniquindio.casasubastas.services.IUsuario;
+import co.edu.uniquindio.casasubastas.model.services.IUsuario;
 
-import java.util.ArrayList;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
 
 public class Comprador implements IUsuario {
 
     /**
-     * Lista donde se guardan los nombre de los productos
+     * Ruta del archivo donde se toma la cantidad maxima de productos
      */
-    ArrayList<String> listaProductos = new ArrayList<>();
+    private final String rutaArchivoProperties = "src/main/java/co/edu/uniquindio/casasubastas/resources/application.properties";
 
     /**
      * Constructor vacio de la clase
@@ -18,53 +21,17 @@ public class Comprador implements IUsuario {
     }
 
     /**
-     * Metodo para aniadir un producto
-     * @param nombre nombre del producto a aniadir
-     */
-    public void aniadirProducto(String nombre){
-        listaProductos.add(nombre);
-    }
-
-    /**
-     * Metodo para tomar la lista de productos
-     * @return Lista donde se guardan los nombre de los productos
-     */
-    public ArrayList<String> getListaProducto() {
-        return listaProductos;
-    }
-
-    /**
-     * Metodo para asignar la lista de productos
-     * @param listaProducto Lista donde se guardan los nombre de los productos
-     */
-    public void setListaProducto(ArrayList<String> listaProducto) {
-        this.listaProductos = listaProducto;
-    }
-
-    /**
      * Metodo para validar la cantidad de pujas activas
      * @return Validacion de si no se excede la cantidad de producto pujados
      */
     @Override
-    public boolean validarCantidadProductos() {
-        return listaProductos.size() < 3;
-    }
-
-    /**
-     * Metodo para validar el tipo de usuario
-     * @return Verdadero porque el usuario es comprador
-     */
-    @Override
-    public boolean validarTipoUsuario() {
-        return true;
-    }
-
-    /**
-     * Metodo para eliminar un producto
-     * @param nombre Nombre del producto a eliminar
-     */
-    @Override
-    public void eliminarProducto(String nombre) {
-        listaProductos.remove(nombre);
+    public boolean validarCantidadProductos(int valor) {
+        Properties properties = new Properties();
+        int auxiliar = 0;
+        try {
+            properties.load(new FileReader(rutaArchivoProperties));
+            auxiliar = Integer.parseInt(properties.getProperty("valor_maximo_pujas"));
+        } catch (IOException e) { e.printStackTrace(); }
+        return valor < auxiliar;
     }
 }

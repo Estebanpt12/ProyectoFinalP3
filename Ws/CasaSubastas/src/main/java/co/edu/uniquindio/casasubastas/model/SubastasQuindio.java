@@ -26,8 +26,9 @@ public class SubastasQuindio {
             e.printStackTrace();
         }
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2022, 10, 02, 00,00,00);
+        calendar.set(2022, 10, 02, 11,00,00);
         Date fInicio = calendar.getTime();
+        System.out.println(fInicio.getDay());
         calendar.set(2023, 10, 02, 00,00,00);
         Date fFin = calendar.getTime();
         try {
@@ -36,16 +37,12 @@ public class SubastasQuindio {
                                             , fFin, 10000, "Esteban");
         } catch (UserNotFoundException e) {
             e.printStackTrace();
-        } catch (InvalidUserException e) {
-            e.printStackTrace();
-        } catch (ProductsLimitException e) {
+        }  catch (ProductsLimitException e) {
             e.printStackTrace();
         }
         try {
             subastasQuindio.crearPuja("Micro", "penaeste1", 50000, fInicio);
         } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        } catch (InvalidUserException e) {
             e.printStackTrace();
         } catch (ProductNotFoundException e) {
             e.printStackTrace();
@@ -166,17 +163,16 @@ public class SubastasQuindio {
      * @param valorPujado valor pujado por el usuario
      * @param fecha fecha de la puja
      * @throws UserNotFoundException Se valida si el usuario no existe
-     * @throws InvalidUserException Se valida la cantidad de pujas y el tipo de usuario
      * @throws ProductNotFoundException Se valida si el producto no existe
      * @throws ProductsLimitException Se valida la cantidad limite de anuncios del usuario
      * @throws InsufficientBidException Se valida si el valor pujado es valido
      */
     public void crearPuja(String nombreProducto, String usuarioPujante, double valorPujado,
-                          Date fecha) throws UserNotFoundException, InvalidUserException, ProductNotFoundException,
+                          Date fecha) throws UserNotFoundException, ProductNotFoundException,
                             ProductsLimitException, InsufficientBidException {
         for(int i = 0; i<usuarios.size(); i++){
-            if(validarPujante(usuarios.get(i), usuarioPujante)){
-                usuarios.get(i).getiUsuario().aniadirProducto(nombreProducto);
+            if(validarPujante(usuarios.get(i), usuarioPujante, nombreProducto)){
+                usuarios.get(i).aniadirProducto(nombreProducto);
                 break;
             }else if(i == usuarios.size()-1){
                 throw new UserNotFoundException("Usuario no encontrado");
@@ -190,7 +186,7 @@ public class SubastasQuindio {
                 }else{
                     for(Usuario usuario : usuarios){
                         if(usuario.getUsuario().equals(usuarioPujante)) {
-                            usuario.getiUsuario().eliminarProducto(nombreProducto);
+                            usuario.eliminarProducto(nombreProducto);
                         }
                     }
                     throw new InsufficientBidException("Valor pujado es menor al valor inicial");
@@ -198,7 +194,7 @@ public class SubastasQuindio {
             }else if(i == productos.size()-1){
                 for(Usuario usuario : usuarios){
                     if(usuario.getUsuario().equals(usuarioPujante)) {
-                        usuario.getiUsuario().eliminarProducto(nombreProducto);
+                        usuario.eliminarProducto(nombreProducto);
                     }
                 }
                 throw new ProductNotFoundException("Producto no encontrado");
@@ -217,15 +213,14 @@ public class SubastasQuindio {
      * @param vInicial valor inicial de la subasta del producto de la casa de subastas
      * @param nombrePublicante nombre del publicante del producto
      * @throws UserNotFoundException Se valida si el usuario existe
-     * @throws InvalidUserException Se valida la cantidad limite de anuncios del usuario y el tipo de usuario
      * @throws ProductsLimitException Se valida la cantidad limite de anuncios del usuario
      */
     public void crearProducto(String tipoProducto, String nombre, String descripcion, File foto, Date fInicio,
                               Date fFin, double vInicial, String nombrePublicante)
-            throws UserNotFoundException, InvalidUserException, ProductsLimitException{
+            throws UserNotFoundException, ProductsLimitException{
         for(int i = 0; i < usuarios.size(); i++){
             if(validarAnunciante(usuarios.get(i), nombrePublicante)){
-                usuarios.get(i).getiUsuario().aniadirProducto(nombre);
+                usuarios.get(i).aniadirProducto(nombre);
                 break;
             }else if(i == usuarios.size()-1){
                 throw new UserNotFoundException("Usuario no encontrado");
@@ -247,20 +242,20 @@ public class SubastasQuindio {
      * Validacion de la puja privada
      * @param usuario Usuario a validar
      * @param usuario1 Usuario de la aplicacion a validar
+     * @param nombreProducto Nombre del producto a validar
      * @return Marca si el usuario existe
-     * @throws InvalidUserException Se valida la cantidad de pujas y el tipo de usuario
      * @throws ProductsLimitException Se valida la cantidad limite de anuncios del usuario
      */
-    private boolean validarPujante(Usuario usuario, String usuario1) throws InvalidUserException, ProductsLimitException{
+    private boolean validarPujante(Usuario usuario, String usuario1, String nombreProducto) throws ProductsLimitException{
         if(usuario.getUsuario().equals(usuario1)){
-            if(usuario.validarTipoUsuario()){
-                if(usuario.validarCantidadProductos()){
+            if(usuario.getiUsuario() instanceof Comprador){
+                if(usuario.validarCantidadProductos(nombreProducto)){
                     return true;
                 }else{
                     throw new ProductsLimitException("El usuario ha sobrepasado la cantidad limite de pujas");
                 }
             }else {
-                throw new InvalidUserException("El usuario no es un comprador");
+                return false;
             }
         }
         return false;
@@ -274,16 +269,16 @@ public class SubastasQuindio {
      * @throws InvalidUserException Se valida el tipo de usuario
      * @throws ProductsLimitException Se valida la cantidad limite de anuncios del usuario
      */
-    private boolean validarAnunciante(Usuario usuario, String nombrePublicante) throws InvalidUserException, ProductsLimitException{
+    private boolean validarAnunciante(Usuario usuario, String nombrePublicante) throws ProductsLimitException{
         if(usuario.getNombre().equals(nombrePublicante)){
-            if(!usuario.validarTipoUsuario()){
-                if(usuario.validarCantidadProductos()){
+            if(usuario.getiUsuario() instanceof Anunciante){
+                if(usuario.validarCantidadProductos(null)){
                     return true;
                 }else{
                     throw new ProductsLimitException("El usuario ha sobrepasado la cantidad limite de anuncios");
                 }
             }else {
-                throw new InvalidUserException("El usuario no es un anunciante");
+                return false;
             }
         }
         return false;
