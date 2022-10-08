@@ -1,4 +1,4 @@
-package co.edu.uniquindio.casasubastas;
+package co.edu.uniquindio.casasubastas.application;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

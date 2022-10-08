@@ -51,6 +51,7 @@ public class SubastasQuindio {
         } catch (InsufficientBidException e){
             e.printStackTrace();
         }
+        System.out.println("Empresa creada");
     }
 
     /**

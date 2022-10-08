@@ -10,8 +10,8 @@ module co.edu.uniquindio.casasubastas {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
 
-    opens co.edu.uniquindio.casasubastas to javafx.fxml;
-    exports co.edu.uniquindio.casasubastas;
     exports co.edu.uniquindio.casasubastas.controllers;
     opens co.edu.uniquindio.casasubastas.controllers to javafx.fxml;
+    exports co.edu.uniquindio.casasubastas.application;
+    opens co.edu.uniquindio.casasubastas.application to javafx.fxml;
 }
