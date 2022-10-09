@@ -267,7 +267,6 @@ public class SubastasQuindio {
      * @param usuario Usuario a validar
      * @param nombrePublicante Nombre del usuario de la aplicacion a validar
      * @return Marca si el usuario existe
-     * @throws InvalidUserException Se valida el tipo de usuario
      * @throws ProductsLimitException Se valida la cantidad limite de anuncios del usuario
      */
     private boolean validarAnunciante(Usuario usuario, String nombrePublicante) throws ProductsLimitException{
