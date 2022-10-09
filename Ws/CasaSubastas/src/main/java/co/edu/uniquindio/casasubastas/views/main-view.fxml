@@ -1,16 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="co.edu.uniquindio.casasubastas.controllers.MainController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Pane prefHeight="300.0" prefWidth="280.0" style="-fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #00ff42 0.0%, #022307 100.0%);">
+            <children>
+                <AnchorPane layoutX="11.0" layoutY="11.0" prefHeight="278.0" prefWidth="255.0" style="-fx-background-color: #212121;">
+                    <children>
+                        <Label layoutX="94.0" layoutY="14.0" text="Login" textAlignment="CENTER" textFill="WHITE">
+                            <font>
+                                <Font name="Tahoma Bold" size="24.0" />
+                            </font>
+                        </Label>
+                        <Pane layoutX="94.0" layoutY="55.0" prefHeight="2.0" prefWidth="66.0" style="-fx-background-color: #00ff46;" />
+                        <PasswordField layoutX="66.0" layoutY="167.0" promptText="Contraseña" style="-fx-background-color: #212121; -fx-border-color: #00ff46; -fx-text-fill: #ffffff; -fx-prompt-text-fill: #ffffff;">
+                            <font>
+                                <Font name="Tahoma Bold" size="12.0" />
+                            </font>
+                        </PasswordField>
+                        <TextField layoutX="66.0" layoutY="111.0" promptText="Nombre de Usuario" style="-fx-background-color: #212121; -fx-border-color: #00ff46; -fx-text-fill: #ffffff; -fx-prompt-text-fill: #ffffff;">
+                            <font>
+                                <Font name="Tahoma Bold" size="12.0" />
+                            </font>
+                        </TextField>
+                        <Button defaultButton="true" layoutX="107.0" layoutY="219.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="82.0" style="-fx-background-color: #00ff46; -fx-background-radius: 50;" text="Login" textFill="WHITE">
+                            <font>
+                                <Font name="Tahoma Bold" size="13.0" />
+                            </font>
+                        </Button>
+                    </children>
+                </AnchorPane>
+            </children>
+        </Pane>
+    </children>
+</AnchorPane>
