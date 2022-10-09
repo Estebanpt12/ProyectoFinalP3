@@ -3,7 +3,7 @@ package co.edu.uniquindio.casasubastas.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class gui2Controller {
+public class gui5Controller {
     @FXML
     private Label welcomeText;
 
