@@ -3,11 +3,11 @@ package co.edu.uniquindio.casasubastas.model;
 import co.edu.uniquindio.casasubastas.exceptions.*;
 
 import java.io.File;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
-public class SubastasQuindio {
+public class SubastasQuindio implements Serializable {
 
     public static void main(String[] args) {
         SubastasQuindio subastasQuindio = new SubastasQuindio();
@@ -25,23 +25,18 @@ public class SubastasQuindio {
         } catch (ExistingUserException e) {
             e.printStackTrace();
         }
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2022, 10, 02, 11,00,00);
-        Date fInicio = calendar.getTime();
-        System.out.println(fInicio.getDay());
-        calendar.set(2023, 10, 02, 00,00,00);
-        Date fFin = calendar.getTime();
+        LocalDateTime localDateTime = LocalDateTime.now();
         try {
             subastasQuindio.crearProducto("Electro", "Micro", "prueba",
-                                            new File("co/edu/uniquindio/casasubastas/views/main-view.fxml"), fInicio
-                                            , fFin, 10000, "Esteban");
+                                            new File("co/edu/uniquindio/casasubastas/views/login-view.fxml"), localDateTime
+                                            , localDateTime.plusMonths(3), 10000, "Esteban");
         } catch (UserNotFoundException e) {
             e.printStackTrace();
         }  catch (ProductsLimitException e) {
             e.printStackTrace();
         }
         try {
-            subastasQuindio.crearPuja("Micro", "penaeste1", 50000, fInicio);
+            subastasQuindio.crearPuja("Micro", "penaeste1", 50000, localDateTime);
         } catch (UserNotFoundException e) {
             e.printStackTrace();
         } catch (ProductNotFoundException e) {
@@ -169,7 +164,7 @@ public class SubastasQuindio {
      * @throws InsufficientBidException Se valida si el valor pujado es valido
      */
     public void crearPuja(String nombreProducto, String usuarioPujante, double valorPujado,
-                          Date fecha) throws UserNotFoundException, ProductNotFoundException,
+                          LocalDateTime fecha) throws UserNotFoundException, ProductNotFoundException,
                             ProductsLimitException, InsufficientBidException {
         for(int i = 0; i<usuarios.size(); i++){
             if(validarPujante(usuarios.get(i), usuarioPujante, nombreProducto)){
@@ -216,8 +211,8 @@ public class SubastasQuindio {
      * @throws UserNotFoundException Se valida si el usuario existe
      * @throws ProductsLimitException Se valida la cantidad limite de anuncios del usuario
      */
-    public void crearProducto(String tipoProducto, String nombre, String descripcion, File foto, Date fInicio,
-                              Date fFin, double vInicial, String nombrePublicante)
+    public void crearProducto(String tipoProducto, String nombre, String descripcion, File foto, LocalDateTime fInicio,
+                              LocalDateTime fFin, double vInicial, String nombrePublicante)
             throws UserNotFoundException, ProductsLimitException{
         for(int i = 0; i < usuarios.size(); i++){
             if(validarAnunciante(usuarios.get(i), nombrePublicante)){

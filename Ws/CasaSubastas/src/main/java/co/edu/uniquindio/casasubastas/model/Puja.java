@@ -1,8 +1,9 @@
 package co.edu.uniquindio.casasubastas.model;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
-public class Puja {
+public class Puja implements Serializable {
 
     /**
      * Usuario que realiza la puja
@@ -17,7 +18,7 @@ public class Puja {
     /**
      * Fecha cuando se realizó la puja
      */
-    private Date fecha;
+    private LocalDateTime fecha;
 
     /**
      * Construcor vacio de la clase
@@ -60,7 +61,7 @@ public class Puja {
      * Metodo para tomar la fecha
      * @return Fecha cuando se realizó la puja
      */
-    public Date getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
@@ -68,7 +69,7 @@ public class Puja {
      * Metodo para asignar la fecha
      * @param fecha Fecha cuando se realizó la puja
      */
-    public void setFecha(Date fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 }

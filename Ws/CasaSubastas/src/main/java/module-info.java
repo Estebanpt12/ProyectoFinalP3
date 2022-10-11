@@ -9,9 +9,12 @@ module co.edu.uniquindio.casasubastas {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
+    requires java.logging;
+    requires java.desktop;
 
     exports co.edu.uniquindio.casasubastas.controllers;
     opens co.edu.uniquindio.casasubastas.controllers to javafx.fxml;
     exports co.edu.uniquindio.casasubastas.application;
     opens co.edu.uniquindio.casasubastas.application to javafx.fxml;
+    exports co.edu.uniquindio.casasubastas.model;
 }

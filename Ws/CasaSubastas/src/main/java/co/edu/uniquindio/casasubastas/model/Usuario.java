@@ -2,9 +2,10 @@ package co.edu.uniquindio.casasubastas.model;
 
 import co.edu.uniquindio.casasubastas.model.services.IUsuario;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Usuario {
+public class Usuario implements Serializable {
 
     /**
      * Usuario del log in
@@ -126,7 +127,7 @@ public class Usuario {
      * Metodo para tomar la lista de productos
      * @return Lista de productos publicados por el anunciante
      */
-    public ArrayList<String> getlistaProductos() {
+    public ArrayList<String> getListaProductos() {
         return listaProductos;
     }
 
@@ -134,7 +135,7 @@ public class Usuario {
      * Metodo para asignar la lista de productos
      * @param listaProductos Lista de productos publicados por el anunciante
      */
-    public void setlistaProductos(ArrayList<String> listaProductos) {
+    public void setListaProductos(ArrayList<String> listaProductos) {
         this.listaProductos = listaProductos;
     }
 

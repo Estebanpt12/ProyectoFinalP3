@@ -1,10 +1,11 @@
 package co.edu.uniquindio.casasubastas.model;
 
 import java.io.File;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 
-public class Producto {
+public class Producto implements Serializable {
 
     /**
      * Nombre del producto
@@ -29,12 +30,12 @@ public class Producto {
     /**
      * Fecha de publicacion del producto
      */
-    private Date fechaInicio;
+    private LocalDateTime fechaInicio;
 
     /**
      * Fecha limite del producto
      */
-    private Date fechaFin;
+    private LocalDateTime fechaFin;
 
     /**
      * Valor inicial que asigna el publicante al producto
@@ -44,7 +45,7 @@ public class Producto {
     /**
      * Lista de pujas del producto
      */
-    private ArrayList<Puja> listaPuja;
+    private ArrayList<Puja> listaPuja = new ArrayList<>();;
 
     /**
      * Marca para saber si el producto esta vendido
@@ -54,9 +55,7 @@ public class Producto {
     /**
      * Constructor vacio de la clase
      */
-    public Producto(){
-        listaPuja = new ArrayList<>();
-    }
+    public Producto(){ }
 
     /**
      * Metodo para tomar el nombre
@@ -126,7 +125,7 @@ public class Producto {
      * Metodo para tomar la fecha inicial
      * @return Fecha de publicacion del producto
      */
-    public Date getFechaInicio() {
+    public LocalDateTime getFechaInicio() {
         return fechaInicio;
     }
 
@@ -134,7 +133,7 @@ public class Producto {
      * Metodo para asignar la fecha inicial
      * @param fechaInicio Fecha de publicacion del producto
      */
-    public void setFechaInicio(Date fechaInicio) {
+    public void setFechaInicio(LocalDateTime fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
@@ -142,7 +141,7 @@ public class Producto {
      * Metodo para tomar la fecha final
      * @return Fecha limite del producto
      */
-    public Date getFechaFin() {
+    public LocalDateTime getFechaFin() {
         return fechaFin;
     }
 
@@ -150,7 +149,7 @@ public class Producto {
      * Metodo para asignar la fecha final
      * @param fechaFin Fecha limite del producto
      */
-    public void setFechaFin(Date fechaFin) {
+    public void setFechaFin(LocalDateTime fechaFin) {
         this.fechaFin = fechaFin;
     }
 
@@ -208,11 +207,19 @@ public class Producto {
      * @param valorPuja Valor que se puja
      * @param fecha Fecha donde se realiza la puja
      */
-    public void agregarPuja(String usuario, double valorPuja, Date fecha){
+    public void agregarPuja(String usuario, double valorPuja, LocalDateTime fecha){
         Puja puja = new Puja();
         puja.setFecha(fecha);
         puja.setUsuario(usuario);
         puja.setValor(valorPuja);
+        listaPuja.add(puja);
+    }
+
+    /**
+     * Metodo para agregar una puja
+     * @param puja Puja a agregar
+     */
+    public void agregarPuja(Puja puja) {
         listaPuja.add(puja);
     }
 }

@@ -4,9 +4,14 @@ import co.edu.uniquindio.casasubastas.model.services.IUsuario;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Properties;
 
-public class Anunciante implements IUsuario {
+public class Anunciante implements IUsuario, Serializable {
+
+    public String getRutaArchivoProperties() {
+        return rutaArchivoProperties;
+    }
 
     /**
      * Ruta del archivo donde se toma la cantidad maxima de productos

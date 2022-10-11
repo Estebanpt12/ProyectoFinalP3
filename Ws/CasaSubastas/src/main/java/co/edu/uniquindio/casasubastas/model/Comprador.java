@@ -4,15 +4,20 @@ import co.edu.uniquindio.casasubastas.model.services.IUsuario;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Properties;
 
 
-public class Comprador implements IUsuario {
+public class Comprador implements IUsuario, Serializable {
 
     /**
      * Ruta del archivo donde se toma la cantidad maxima de productos
      */
     private final String rutaArchivoProperties = "src/main/java/co/edu/uniquindio/casasubastas/resources/application.properties";
+
+    public String getRutaArchivoProperties() {
+        return rutaArchivoProperties;
+    }
 
     /**
      * Constructor vacio de la clase
