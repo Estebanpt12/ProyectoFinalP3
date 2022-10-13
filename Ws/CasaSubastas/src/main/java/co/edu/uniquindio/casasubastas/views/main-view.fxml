@@ -14,23 +14,23 @@
             <children>
                 <AnchorPane layoutX="11.0" layoutY="11.0" prefHeight="278.0" prefWidth="255.0" style="-fx-background-color: #212121;">
                     <children>
-                        <Label layoutX="94.0" layoutY="14.0" text="Login" textAlignment="CENTER" textFill="WHITE">
+                        <Label fx:id="titleLabel" layoutX="94.0" layoutY="14.0" text="Login" textAlignment="CENTER" textFill="WHITE">
                             <font>
                                 <Font name="Tahoma Bold" size="24.0" />
                             </font>
                         </Label>
                         <Pane layoutX="94.0" layoutY="55.0" prefHeight="2.0" prefWidth="66.0" style="-fx-background-color: #00ff46;" />
-                        <PasswordField layoutX="66.0" layoutY="167.0" promptText="Contraseña" style="-fx-background-color: #212121; -fx-border-color: #00ff46; -fx-text-fill: #ffffff; -fx-prompt-text-fill: #ffffff;">
+                        <PasswordField fx:id="passwordTextField" layoutX="53.0" layoutY="154.0" promptText="Contraseña" style="-fx-background-color: #212121; -fx-border-color: #00ff46; -fx-text-fill: #ffffff; -fx-prompt-text-fill: #ffffff;">
                             <font>
                                 <Font name="Tahoma Bold" size="12.0" />
                             </font>
                         </PasswordField>
-                        <TextField layoutX="66.0" layoutY="111.0" promptText="Nombre de Usuario" style="-fx-background-color: #212121; -fx-border-color: #00ff46; -fx-text-fill: #ffffff; -fx-prompt-text-fill: #ffffff;">
+                        <TextField fx:id="usernameTextField" layoutX="53.0" layoutY="100.0" promptText="Nombre de Usuario" style="-fx-background-color: #212121; -fx-border-color: #00ff46; -fx-text-fill: #ffffff; -fx-prompt-text-fill: #ffffff;">
                             <font>
                                 <Font name="Tahoma Bold" size="12.0" />
                             </font>
                         </TextField>
-                        <Button defaultButton="true" layoutX="107.0" layoutY="219.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="82.0" style="-fx-background-color: #00ff46; -fx-background-radius: 50;" text="Login" textFill="WHITE">
+                        <Button fx:id="loginBtn" defaultButton="true" layoutX="95.0" layoutY="221.0" mnemonicParsing="false" onAction="#loginUsuario" prefHeight="30.0" prefWidth="82.0" style="-fx-background-color: #00ff46; -fx-background-radius: 50;" text="Login" textFill="WHITE">
                             <font>
                                 <Font name="Tahoma Bold" size="13.0" />
                             </font>
