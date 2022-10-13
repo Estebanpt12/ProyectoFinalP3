@@ -28,7 +28,7 @@ public class SubastasQuindio implements Serializable {
         LocalDateTime localDateTime = LocalDateTime.now();
         try {
             subastasQuindio.crearProducto("Electro", "Micro", "prueba",
-                                            new File("co/edu/uniquindio/casasubastas/views/login-view.fxml"), localDateTime
+                                           "co/edu/uniquindio/casasubastas/views/login-view.fxml", localDateTime
                                             , localDateTime.plusMonths(3), 10000, "Esteban");
         } catch (UserNotFoundException e) {
             e.printStackTrace();
@@ -120,7 +120,7 @@ public class SubastasQuindio implements Serializable {
         usuario1.setContrasenia(contrasenia);
         usuario1.setNombre(nombre);
         usuario1.setEdad(edad);
-        usuario1.setiUsuario(anunciante);
+        usuario1.setIUsuario(anunciante);
         usuarios.add(usuario1);
     }
 
@@ -148,7 +148,7 @@ public class SubastasQuindio implements Serializable {
         usuario1.setContrasenia(contrasenia);
         usuario1.setNombre(nombre);
         usuario1.setEdad(edad);
-        usuario1.setiUsuario(comprador);
+        usuario1.setIUsuario(comprador);
         usuarios.add(usuario1);
     }
 
@@ -211,7 +211,7 @@ public class SubastasQuindio implements Serializable {
      * @throws UserNotFoundException Se valida si el usuario existe
      * @throws ProductsLimitException Se valida la cantidad limite de anuncios del usuario
      */
-    public void crearProducto(String tipoProducto, String nombre, String descripcion, File foto, LocalDateTime fInicio,
+    public void crearProducto(String tipoProducto, String nombre, String descripcion, String foto, LocalDateTime fInicio,
                               LocalDateTime fFin, double vInicial, String nombrePublicante)
             throws UserNotFoundException, ProductsLimitException{
         for(int i = 0; i < usuarios.size(); i++){
@@ -226,7 +226,7 @@ public class SubastasQuindio implements Serializable {
         producto.setTipoProducto(tipoProducto);
         producto.setNombre(nombre);
         producto.setDescripcion(descripcion);
-        producto.setFoto(foto);
+        producto.setRutaFoto(foto);
         producto.setFechaInicio(fInicio);
         producto.setFechaFin(fFin);
         producto.setValorInicial(vInicial);
@@ -277,5 +277,128 @@ public class SubastasQuindio implements Serializable {
             }
         }
         return false;
+    }
+
+    /**
+     * Metodo para editar un producto
+     * @param tipoProducto tipo de producto de la casa de subastas
+     * @param nombre nombre del producto de la casa de subastas
+     * @param descripcion descripcion del producto de la casa de subastas
+     * @param foto foto del producto de la casa de subastas
+     * @param fInicio fecha de publicacion del producto de la casa de subastas
+     * @param fFin fecha donde se termina la publicacion del producto de la casa de subastas
+     * @param vInicial valor inicial de la subasta del producto de la casa de subastas
+     * @throws ProductNotFoundException Se valida si el producto existe
+     */
+    public void editarProducto(String tipoProducto, String nombre, String descripcion, String foto, LocalDateTime fInicio,
+                               LocalDateTime fFin, double vInicial) throws ProductNotFoundException {
+        for(int i = 0; i< productos.size(); i++){
+            if(productos.get(i).getNombre().equals(nombre)){
+                productos.get(i).setTipoProducto(tipoProducto);
+                productos.get(i).setNombre(nombre);
+                productos.get(i).setDescripcion(descripcion);
+                productos.get(i).setRutaFoto(foto);
+                productos.get(i).setFechaInicio(fInicio);
+                productos.get(i).setFechaFin(fFin);
+                productos.get(i).setValorInicial(vInicial);
+                productos.get(i).setVendido(false);
+            }else if(i == productos.size()-1){
+                throw new ProductNotFoundException("El producto no ha sido encontrado");
+            }
+        }
+    }
+
+    /**
+     * Metodo para eliminar un producto
+     * @param tipoProducto tipo de producto de la casa de subastas
+     * @param nombre nombre del producto de la casa de subastas
+     * @return producto eliminado
+     * @throws ProductNotFoundException Se valida si el producto existe
+     */
+    public Producto eliminarProducto(String tipoProducto, String nombre) throws ProductNotFoundException {
+        Producto producto = new Producto();
+        for(int i = 0; i<productos.size(); i++){
+            if(productos.get(i).getNombre().equals(nombre) && productos.get(i).getTipoProducto().equals(tipoProducto)){
+                producto = productos.get(i);
+                productos.remove(i);
+            }else if(i == productos.size()-1){
+                throw new ProductNotFoundException("Producto no encontrado");
+            }
+        }
+        for(int i = 0; i<usuarios.size(); i++){
+            for(int j = 0; j<usuarios.size(); j++){
+                if(usuarios.get(i).getListaProductos().get(j).equals(producto.getNombre()) && usuarios.get(i).getiUsuario() instanceof  Anunciante){
+                    usuarios.get(i).getListaProductos().remove(j);
+                }
+            }
+        }
+        return producto;
+    }
+
+    /**
+     * Metodo para editar una puja
+     * @param nombreProducto Nombre del producto al que se le hace la puja
+     * @param usuarioPujante Usuario que hace la puja
+     * @param valorPujado valor pujado por el usuario
+     * @param fecha fecha de la puja
+     * @throws ProductNotFoundException Se valida si el producto existe
+     * @throws BidNotFoundException Se valida si la puja existe
+     * @throws InsufficientBidException Se valida si la puja hecha es mayor al valor inicial del producto
+     */
+    public void editarPuja(String nombreProducto, String usuarioPujante, double valorPujado,
+                           LocalDateTime fecha) throws ProductNotFoundException, BidNotFoundException, InsufficientBidException {
+        for(int i = 0; i<productos.size(); i++){
+            if(productos.get(i).getNombre().equals(nombreProducto)){
+                for(int j = 0; j<productos.get(i).getListaPuja().size(); i++){
+                    if(productos.get(i).getListaPuja().get(j).getUsuario().equals(usuarioPujante)
+                        && productos.get(i).getListaPuja().get(j).getFecha() == fecha){
+                        if(productos.get(i).getValorInicial() <= valorPujado){
+                            productos.get(i).getListaPuja().get(j).setValor(valorPujado);
+                        }else {
+                            throw new InsufficientBidException("El valor pujado es menor al valor inicial del producto");
+                        }
+                    }else if(j == productos.get(i).getListaPuja().size()-1){
+                        throw new BidNotFoundException("La puja no ha sido encontrada");
+                    }
+                }
+                break;
+            }else if(i == productos.size()-1){
+                throw new ProductNotFoundException("El producto no ha sido encontrado");
+            }
+        }
+    }
+
+    /**
+     * Metodo para borrar una puja
+     * @param nombreProducto Nombre del producto al que se le hace la puja
+     * @param usuarioPujante Usuario que hace la puja
+     * @return puja eliminada
+     * @throws ProductNotFoundException Se valida si el producto existe
+     * @throws BidNotFoundException Se valida si la puja existe
+     */
+    public Puja eliminarPuja(String nombreProducto, String usuarioPujante) throws ProductNotFoundException, BidNotFoundException {
+        Puja puja = new Puja();
+        for(int i = 0; i<productos.size(); i++){
+            if(productos.get(i).getNombre().equals(nombreProducto)){
+                for(int j = 0; j<productos.get(i).getListaPuja().size(); j++){
+                    if(productos.get(i).getListaPuja().get(j).getUsuario().equals(usuarioPujante)){
+                        puja = productos.get(i).getListaPuja().get(j);
+                        productos.get(i).getListaPuja().remove(j);
+                    }else if(j == productos.get(i).getListaPuja().size()-1){
+                        throw new BidNotFoundException("La puja no ha sido encontrada");
+                    }
+                }
+            }else if(i == productos.size()-1){
+                throw new ProductNotFoundException("Producto no encontrado");
+            }
+        }
+        for (Usuario usuario : usuarios) {
+            for (int j = 0; j < usuario.getListaProductos().size(); j++) {
+                if (usuario.getListaProductos().get(j).equals(nombreProducto) && usuario.getiUsuario() instanceof Comprador) {
+                    usuario.getListaProductos().remove(j);
+                }
+            }
+        }
+        return puja;
     }
 }

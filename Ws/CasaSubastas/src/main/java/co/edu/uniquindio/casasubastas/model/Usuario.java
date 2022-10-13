@@ -119,8 +119,16 @@ public class Usuario implements Serializable {
      * Metodo para asignar la interfaz del usuario
      * @param iUsuario Interfaz para asignar el tipo de usuario
      */
-    public void setiUsuario(IUsuario iUsuario) {
+    public void setIUsuario(IUsuario iUsuario) {
         this.iUsuario = iUsuario;
+    }
+
+    public void setIUsuario(Anunciante anunciante) {
+        this.iUsuario = anunciante;
+    }
+
+    public void setIUsuario(Comprador comprador) {
+        this.iUsuario = comprador;
     }
 
     /**

@@ -34,10 +34,10 @@ public class Persistencia {
         LocalDateTime localDateTime = LocalDateTime.now();
         try {
             subastasQuindio.crearProducto("Electro", "Micro", "prueba",
-                    new File("co/edu/uniquindio/casasubastas/views/login-view.fxml"), localDateTime
+                    "co/edu/uniquindio/casasubastas/views/login-view.fxml", localDateTime
                     , localDateTime.plusYears(1), 10000, "Esteban");
             subastasQuindio.crearProducto("Pro", "Jpa", "prueba",
-                    new File("co/edu/uniquindio/casasubastas/views/login-view.fxml"), localDateTime
+                    "co/edu/uniquindio/casasubastas/views/login-view.fxml", localDateTime
                     , localDateTime.plusMonths(6), 20000, "per");
         } catch (UserNotFoundException e) {
             e.printStackTrace();
@@ -61,6 +61,8 @@ public class Persistencia {
         try {
             persistencia.guardarUsuarios(subastasQuindio.getUsuarios());
             persistencia.guardarProductos(subastasQuindio.getProductos());
+            guardarRecursoCasaBinario(subastasQuindio);
+            guardarRecursoCasaBinario(subastasQuindio);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,7 +74,6 @@ public class Persistencia {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //guardarRecursoCasaXML(subastasQuindio);
         try {
             guardarProductoEliminado(subastasQuindio.getProductos().get(0));
             guardarProductoAnuncianteEliminado("123", "wasd");
@@ -80,6 +81,7 @@ public class Persistencia {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        SubastasQuindio subastasQuindio1 = cargarRecursoCasaBinario();
     }
 
     /**
@@ -157,7 +159,7 @@ public class Persistencia {
      * @param listaUsuarios Lista de usuarios a guardar
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public void guardarUsuarios(ArrayList<Usuario> listaUsuarios) throws IOException {
+    public static void guardarUsuarios(ArrayList<Usuario> listaUsuarios) throws IOException {
         String contenidoCompradores = "";
         String contenidoAnunciantes = "";
         String contenidoPujas = "";
@@ -194,7 +196,7 @@ public class Persistencia {
      * @param listaUsuarios Lista de usuarios a guardar
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public void guardarUsuariosRespaldo(ArrayList<Usuario> listaUsuarios) throws IOException {
+    public static void guardarUsuariosRespaldo(ArrayList<Usuario> listaUsuarios) throws IOException {
         String contenidoCompradores = "";
         String contenidoAnunciantes = "";
         String contenidoPujas = "";
@@ -234,7 +236,7 @@ public class Persistencia {
      * @param listaProductos Lista de productos a guardar
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public void guardarProductos(ArrayList<Producto> listaProductos) throws IOException{
+    public static void guardarProductos(ArrayList<Producto> listaProductos) throws IOException{
         String contenidoProductos = "";
         String contenidoPujas = "";
         for(Producto producto : listaProductos){
@@ -246,7 +248,7 @@ public class Persistencia {
             }
             contenidoProductos += "<"+producto.getNombre()+">@@<"+producto.getTipoProducto()+">@@<"+
                     producto.getValorInicial()+">@@<"+producto.getDescripcion()+">@@<"+producto.getFechaInicio()+">@@<"+
-                    producto.getFechaFin()+">@@<"+producto.isVendido()+">@@<"+producto.getFoto().getAbsolutePath()+">\n";
+                    producto.getFechaFin()+">@@<"+producto.isVendido()+">@@<"+producto.getRutaFoto()+">\n";
         }
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS, contenidoProductos, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS, contenidoPujas, false);
@@ -254,7 +256,7 @@ public class Persistencia {
     }
 
     /**
-     * Método para guardar unproducto y sus pujas eliminados
+     * Método para guardar un producto y sus pujas eliminados
      * @param producto Lista de productos a guardar
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
@@ -267,7 +269,7 @@ public class Persistencia {
         }
         contenidoProductos += "<"+producto.getNombre()+">@@<"+producto.getTipoProducto()+">@@<"+
                 producto.getValorInicial()+">@@<"+producto.getDescripcion()+">@@<"+producto.getFechaInicio()+">@@<"+
-                producto.getFechaFin()+">@@<"+producto.isVendido()+">@@<"+producto.getFoto().getAbsolutePath()+">@@<"+
+                producto.getFechaFin()+">@@<"+producto.isVendido()+">@@<"+producto.getRutaFoto()+">@@<"+
                 LocalDateTime.now()+">\n";
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ELIMINADOS, contenidoProductos, true);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_ELIMINADOS, contenidoPujas, true);
@@ -299,11 +301,24 @@ public class Persistencia {
     }
 
     /**
+     * Metodo para guardar una puja eliminada
+     * @param puja Puja a eliminar
+     * @param producto Nombre del producto asociado a la puja
+     * @throws IOException Se valida si existe un error en la escritura del archivo
+     */
+    public static void guardarPujaEliminada(Puja puja, String producto) throws IOException {
+        String contenidoPujas = "";
+        contenidoPujas += "<"+producto+">@@<"+puja.getUsuario()+">@@<"+puja.getFecha()+">@@<"
+                +puja.getValor()+">@@<"+LocalDateTime.now()+">\n";
+        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_ELIMINADOS, contenidoPujas, true);
+    }
+
+    /**
      * Método para guardar una lista de productos y sus pujas en el respaldo
      * @param listaProductos Lista de productos a guardar
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public void guardarProductosRespaldo(ArrayList<Producto> listaProductos) throws IOException{
+    public static void guardarProductosRespaldo(ArrayList<Producto> listaProductos) throws IOException{
         String contenidoProductos = "";
         String contenidoPujas = "";
         for(Producto producto : listaProductos){
@@ -315,7 +330,7 @@ public class Persistencia {
             }
             contenidoProductos += "<"+producto.getNombre()+">@@<"+producto.getTipoProducto()+">@@<"+
                     producto.getValorInicial()+">@@<"+producto.getDescripcion()+">@@<"+producto.getFechaInicio()+">@@<"+
-                    producto.getFechaFin()+">@@<"+producto.isVendido()+">@@<"+producto.getFoto().getAbsolutePath()+">\n";
+                    producto.getFechaFin()+">@@<"+producto.isVendido()+">@@<"+producto.getRutaFoto()+">\n";
         }
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Productos")+".txt",
                 contenidoProductos, false);
@@ -337,7 +352,7 @@ public class Persistencia {
 
         for(String anuncianteCargado : listaAnunciantes){
             Usuario usuario = new Usuario();
-            usuario.setiUsuario(new Anunciante());
+            usuario.setIUsuario(new Anunciante());
             anuncianteCargado = deleteFirstAndLastString(anuncianteCargado);
             Scanner scanner = new Scanner(anuncianteCargado);
             scanner.useDelimiter(">@@<");
@@ -364,7 +379,7 @@ public class Persistencia {
 
         for(String compradorCargado : listaCompradores){
             Usuario usuario = new Usuario();
-            usuario.setiUsuario(new Comprador());
+            usuario.setIUsuario(new Comprador());
             compradorCargado = deleteFirstAndLastString(compradorCargado);
             Scanner scanner = new Scanner(compradorCargado);
             scanner.useDelimiter(">@@<");
@@ -396,7 +411,7 @@ public class Persistencia {
      * @return Lista de productos cargados
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public ArrayList<Producto> cargarProductos() throws IOException{
+    public static ArrayList<Producto> cargarProductos() throws IOException{
         ArrayList<Producto> listaProducto = new ArrayList<>();
         ArrayList<String> productos = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PRODUCTOS);
         ArrayList<String> pujas = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PUJAS);
@@ -416,8 +431,7 @@ public class Persistencia {
                 localDateTime = LocalDateTime.parse(scanner.next());
                 producto.setFechaFin(localDateTime);
                 producto.setVendido(Boolean.parseBoolean(scanner.next()));
-                File file = new File(scanner.next());
-                producto.setFoto(file);
+                producto.setRutaFoto(scanner.next());
             }
             for(String pujaCargada : pujas){
                 pujaCargada = deleteFirstAndLastString(pujaCargada);
@@ -458,7 +472,7 @@ public class Persistencia {
      * @param nivel Nivel del registro
      * @param accion La accion que se realiza
      */
-    public void guardaRegistroLog(String mensajeLog, int nivel, String accion) {
+    public static void guardaRegistroLog(String mensajeLog, int nivel, String accion) {
         ArchivoUtil.guardarRegistroLog(mensajeLog, nivel, accion, RUTA_ARCHIVO_LOG);
     }
 
@@ -466,38 +480,36 @@ public class Persistencia {
      * Metodo para iniciar sesion
      * @param usuario Usuario de la aplicacion
      * @param contrasenia Contrasenia de la aplicacion
-     * @return Si el usuario existe
+     * @return Usuario logueado
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      * @throws UserNotFoundException En caso de que el usuario no sea encontrado en la lista de usuarios
      */
-    public static boolean iniciarSesion(String usuario, String contrasenia) throws  IOException, UserNotFoundException {
-
-        if(validarUsuario(usuario,contrasenia)) {
-            return true;
+    public static Usuario iniciarSesion(String usuario, String contrasenia) throws  IOException, UserNotFoundException {
+        if(validarUsuario(usuario, contrasenia) != null) {
+            return validarUsuario(usuario, contrasenia);
         }else {
             throw new UserNotFoundException("Usuario no existe");
         }
-
     }
 
     /**
      * Metodo privado para validar un usuario en la lista de usuarios
      * @param usuario Usuario de la aplicacion
      * @param contrasenia Contrasenia de la aplicacion
-     * @return Si el usuario existe
+     * @return Usuario logueado
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    private static boolean validarUsuario(String usuario, String contrasenia) throws IOException {
+    private static Usuario validarUsuario(String usuario, String contrasenia) throws IOException {
         ArrayList<Usuario> usuarios = Persistencia.cargarUsuarios();
 
         for (int indiceUsuario = 0; indiceUsuario < usuarios.size(); indiceUsuario++)
         {
             Usuario usuarioAux = usuarios.get(indiceUsuario);
             if(usuarioAux.getUsuario().equalsIgnoreCase(usuario) && usuarioAux.getContrasenia().equalsIgnoreCase(contrasenia)) {
-                return true;
+                return usuarioAux;
             }
         }
-        return false;
+        return null;
     }
 
     /**

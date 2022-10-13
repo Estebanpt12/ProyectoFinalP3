@@ -25,7 +25,7 @@ public class Producto implements Serializable {
     /**
      * Foto del producto
      */
-    private File foto;
+    private String rutaFoto;
 
     /**
      * Fecha de publicacion del producto
@@ -107,18 +107,18 @@ public class Producto implements Serializable {
 
     /**
      * Metodo para tomar la foto
-     * @return Foto del producto
+     * @return Ruta de la foto del producto
      */
-    public File getFoto() {
-        return foto;
+    public String getRutaFoto() {
+        return rutaFoto;
     }
 
     /**
      * Metodo para asignar la foto
-     * @param foto Foto del producto
+     * @param rutaFoto Ruta de la foto del producto
      */
-    public void setFoto(File foto) {
-        this.foto = foto;
+    public void setRutaFoto(String rutaFoto) {
+        this.rutaFoto = rutaFoto;
     }
 
     /**
