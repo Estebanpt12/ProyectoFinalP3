@@ -356,7 +356,12 @@ public class SubastasQuindio implements Serializable {
         }
         return puja;
     }
-
+    /**
+     * Método para crear un mensaje Enviado
+     * @param mensaje Mensaje a ser enviado
+     * @param codigoDestinatario Codigo del destinatario del mensaje
+     * @param codigoRemitente Codigo del remitente del mensaje
+     */
     public void crearMensajeEnviado(String codigoRemitente, String codigoDestinatario, String mensaje){
         Mensaje mensaje1 = new Mensaje();
         mensaje1.setUsuario(codigoDestinatario);
@@ -370,7 +375,12 @@ public class SubastasQuindio implements Serializable {
             }
         }
     }
-
+    /**
+     * Método para crear un mensaje recibido
+     * @param codigoRemitente Codigo del remitente del mensaje
+     * @param codigoDestinatario Codigo del destinatario del mensaje
+     * @param mensaje Mensaje recibido
+     */
     public void crearMensajeRecibido(String codigoRemitente, String codigoDestinatario, String mensaje){
         Mensaje mensaje1 = new Mensaje();
         mensaje1.setUsuario(codigoRemitente);

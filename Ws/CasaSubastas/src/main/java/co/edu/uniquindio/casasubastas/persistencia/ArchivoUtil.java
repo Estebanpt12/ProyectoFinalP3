@@ -56,7 +56,13 @@ public  class ArchivoUtil {
         return contenido;
     }
 
-
+    /**
+     *Metodo para guardar registro en el log
+     * @param accion Accion que se guarda en el log
+     * @param nivel Nivel del registro que quedará en el log
+     * @param mensajeLog Mensaje que se guardará en el log
+     * @param rutaArchivo Ruta del archivo log
+     */
     public static void guardarRegistroLog(String mensajeLog, int nivel, String accion, String rutaArchivo)
     {
         String log = "";
@@ -103,7 +109,9 @@ public  class ArchivoUtil {
         }
 
     }
-
+    /**
+     *Metodo para obtener la fecha del sistema
+     */
     private static void cargarFechaSistema() {
 
         String diaN = "";
@@ -171,7 +179,12 @@ public  class ArchivoUtil {
         return aux;
     }
 
-
+    /**
+     *Metodo para guardar el recurso serializado
+     * @param rutaArchivo Ruta del archivo serializado
+     * @param object Objeto que se va a serializar
+     * @throws Exception Excepcion
+     */
     public static void salvarRecursoSerializado(String rutaArchivo, Object object)	throws Exception {
         ObjectOutputStream oos = null;
         try {
@@ -187,7 +200,11 @@ public  class ArchivoUtil {
 
 
 
-
+    /**
+     *Metodo para cargar el recurso serializado XML
+     * @param rutaArchivo Ruta del archivo XML
+     * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
+     */
     public static Object cargarRecursoSerializadoXML(String rutaArchivo) throws IOException {
 
         XMLDecoder decodificadorXML;
@@ -200,6 +217,12 @@ public  class ArchivoUtil {
 
     }
 
+    /**
+     * Metodo para salvar el recurso serializado XML
+     * @param rutaArchivo Ruta del archivo xml
+     * @param objeto Objeto a serializar
+     * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
+     */
     public static void salvarRecursoSerializadoXML(String rutaArchivo, Object objeto) throws IOException {
 
         XMLEncoder codificadorXML;

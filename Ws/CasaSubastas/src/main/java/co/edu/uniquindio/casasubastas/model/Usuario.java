@@ -186,10 +186,17 @@ public class Usuario implements Serializable {
         this.iUsuario = iUsuario;
     }
 
+    /**
+     * Metodo para obtener la lista de mensajes
+     * @return listaMensajes lista de mensajes
+     */
     public ArrayList<Mensaje> getListaMensajes() {
         return listaMensajes;
     }
-
+    /**
+     * Metodo para asignar la lista de mensajes
+     * @param listaMensajes lista de mensajes
+     */
     public void setListaMensajes(ArrayList<Mensaje> listaMensajes) {
         this.listaMensajes = listaMensajes;
     }
