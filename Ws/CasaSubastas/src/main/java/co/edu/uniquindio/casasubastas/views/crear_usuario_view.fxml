@@ -35,7 +35,11 @@
                   <Font name="Tahoma Bold" size="13.0" />
                </font>
             </Button>
+<<<<<<< Updated upstream:Ws/CasaSubastas/src/main/java/co/edu/uniquindio/casasubastas/views/crear_usuario_view.fxml
             <TextField fx:id="edadTextField" layoutX="276.0" layoutY="167.0" prefHeight="25.0" prefWidth="165.0" promptText="Edad" style="-fx-background-color: #212121; -fx-border-color: #00ff46; -fx-text-fill: #ffffff; -fx-prompt-text-fill: #ffffff;">
+=======
+            <TextField fx:id="edadTextField" layoutX="276.0" layoutY="167.0" prefHeight="26.0" prefWidth="165.0" promptText="Edad" style="-fx-background-color: #212121; -fx-border-color: #00ff46; -fx-text-fill: #ffffff; -fx-prompt-text-fill: #ffffff;">
+>>>>>>> Stashed changes:Ws/CasaSubastas/src/main/java/co/edu/uniquindio/casasubastas/views/gui2.fxml
                <font>
                   <Font name="Tahoma Bold" size="12.0" />
                </font>

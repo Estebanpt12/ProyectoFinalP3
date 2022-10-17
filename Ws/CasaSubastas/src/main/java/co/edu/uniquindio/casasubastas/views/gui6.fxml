@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+  <tabs>
+    <Tab text="Untitled Tab 1">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView prefHeight="322.0" prefWidth="600.0">
+                    <columns>
+                      <TableColumn prefWidth="192.0" text="Nombre" />
+                      <TableColumn minWidth="0.0" prefWidth="133.5999755859375" text="Tipo" />
+                        <TableColumn prefWidth="120.0" text="Valor Actual" />
+                        <TableColumn prefWidth="156.7999267578125" text="Descripcion" />
+                    </columns>
+                  </TableView>
+                  <Button layoutX="534.0" layoutY="334.0" mnemonicParsing="false" text="Pujar" />
+                  <Button layoutX="23.0" layoutY="334.0" mnemonicParsing="false" text="Crear anuncio" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Untitled Tab 2">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView layoutY="66.0" prefHeight="307.0" prefWidth="600.0">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="C1" />
+                      <TableColumn prefWidth="75.0" text="C2" />
+                    </columns>
+                  </TableView>
+                  <TextField layoutX="97.0" layoutY="25.0" promptText="Nombre" />
+                  <Button layoutX="274.0" layoutY="25.0" mnemonicParsing="false" text="Buscar" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>
