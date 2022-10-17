@@ -14,6 +14,7 @@ public class ModelFactoryController {
 
     SubastasQuindio subastasQuindio;
     Usuario usuarioLogeado;
+    Producto productoEditar;
 
     private static class SingletonHolder {
         private final static ModelFactoryController eINSTANCE = new ModelFactoryController();
@@ -25,6 +26,7 @@ public class ModelFactoryController {
 
     public ModelFactoryController() {
         usuarioLogeado = new Usuario();
+        productoEditar = new Producto();
         cargarResourceXML();
         if(subastasQuindio == null){
             System.out.println("es null");
@@ -32,7 +34,6 @@ public class ModelFactoryController {
             guardarResourceXML();
             guardarResourceBinario();
         }
-        Persistencia.guardaRegistroLog("Inicio de sesión del usuario:pedro", 1, "inicioSesion");
     }
 
     private void cargarDatosDesdeArchivos() {
@@ -94,14 +95,14 @@ public class ModelFactoryController {
 
     public void crearAnunciante(String usuario, String contrasenia, String nombre, int edad) throws ExistingUserException, InvalidUserException {
         subastasQuindio.crearAnunciante(usuario, contrasenia, nombre, edad);
-        crearRegistroLog("Anunciante creado", 1, "Creacion");
+        crearRegistroLog("Anunciante creado: " + usuario, 1, "Creacion");
         guardarSubastasQuindio();
         guardarRespaldo();
     }
 
     public void crearComprador(String usuario, String contrasenia, String nombre, int edad) throws ExistingUserException, InvalidUserException {
         subastasQuindio.crearComprador(usuario, contrasenia, nombre, edad);
-        crearRegistroLog("Comprador creado", 1, "Creacion");
+        crearRegistroLog("Comprador creado: " + usuario, 1, "Creacion");
         guardarSubastasQuindio();
         guardarRespaldo();
     }
@@ -115,10 +116,10 @@ public class ModelFactoryController {
     }
 
     public void crearProducto(String tipoProducto, String nombre, String descripcion, String foto,
-                              double vInicial, String nombrePublicante) throws UserNotFoundException, ProductsLimitException {
+                              double vInicial) throws UserNotFoundException, ProductsLimitException {
         LocalDateTime localDateTime = LocalDateTime.now();
         subastasQuindio.crearProducto(tipoProducto, nombre, descripcion, foto, localDateTime,
-                localDateTime.plusYears(1), vInicial, nombrePublicante);
+                localDateTime.plusMinutes(30), vInicial, usuarioLogeado.getNombre());
         crearRegistroLog("Producto creado", 1, "Creacion");
         guardarRespaldo();
         guardarSubastasQuindio();
@@ -137,6 +138,8 @@ public class ModelFactoryController {
         subastasQuindio.editarPuja(nombreProducto, usuarioPujante, valorPujado, fecha);
         crearRegistroLog("La puja del usuario "+ usuarioPujante +" por el producto "+ nombreProducto+ " ha sido editada"
                             , 1, "Editar puja");
+        guardarSubastasQuindio();
+        guardarRespaldo();
     }
 
     public void eliminarPuja(String nombreProducto, String usuarioPujante) throws BidNotFoundException, ProductNotFoundException, IOException {
@@ -144,13 +147,16 @@ public class ModelFactoryController {
         Persistencia.guardarPujaEliminada(puja, nombreProducto);
         crearRegistroLog("El usuario "+usuarioPujante+" ha eliminado la puja a el producto "+nombreProducto+" con valor de"
                 +puja.getValor()+" hecha en la fecha "+ puja.getFecha(), 2, "Eliminar puja");
+        guardarSubastasQuindio();
+        guardarRespaldo();
     }
 
-    public void editarProducto(String tipoProducto, String nombre, String descripcion, String foto, LocalDateTime fInicio,
-                               LocalDateTime fFin, double vInicial) throws ProductNotFoundException {
-        subastasQuindio.editarProducto(tipoProducto, nombre, descripcion, foto, fInicio, fFin, vInicial);
+    public void editarProducto(String tipoProducto, String nombre, String descripcion, String foto, double vInicial) throws ProductNotFoundException {
+        subastasQuindio.editarProducto(tipoProducto, nombre, descripcion, foto, vInicial);
         crearRegistroLog("El producto "+nombre+" que pertenece al tipo "+tipoProducto+" ha sido editado", 1,
                 "Editar producto");
+        guardarSubastasQuindio();
+        guardarRespaldo();
     }
 
     public void eliminarProducto(String tipoProducto, String nombre) throws ProductNotFoundException, IOException {
@@ -158,6 +164,24 @@ public class ModelFactoryController {
         Persistencia.guardarProductoEliminado(producto);
         crearRegistroLog("El producto "+nombre+" que pertenece al tipo "+tipoProducto+" ha sido eliminado", 2,
                 "Eliminar producto");
+        guardarSubastasQuindio();
+        guardarRespaldo();
     }
 
+    public Producto getProductoEditar() {
+        return productoEditar;
+    }
+
+    public void setProductoEditar(Producto productoEditar) {
+        this.productoEditar = productoEditar;
+    }
+
+    public void crearMensaje(String mensaje, String codigoUsuarioDestinatario){
+        subastasQuindio.crearMensajeEnviado(usuarioLogeado.getUsuario(), codigoUsuarioDestinatario, mensaje);
+        subastasQuindio.crearMensajeRecibido(usuarioLogeado.getUsuario(),codigoUsuarioDestinatario,mensaje);
+        crearRegistroLog("El mensaje enviado por "+usuarioLogeado.getUsuario()+" a "+ codigoUsuarioDestinatario+
+                        " ha sido creado", 1, "crearMensaje");
+        guardarSubastasQuindio();
+        guardarRespaldo();
+    }
 }

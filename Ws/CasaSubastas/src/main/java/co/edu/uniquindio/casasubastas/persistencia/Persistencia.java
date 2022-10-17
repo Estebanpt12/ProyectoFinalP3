@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class Persistencia {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         SubastasQuindio subastasQuindio = new SubastasQuindio();
         try {
             subastasQuindio.crearAnunciante("penaeste", "1234", "Esteban", 19);
@@ -155,6 +155,11 @@ public class Persistencia {
     public static final String RUTA_ARCHIVOS_RESPALDO = "C:\\td\\persistencia\\respaldo\\";
 
     /**
+     * Ruta del archivo donde se guardan los mensajes
+     */
+    public static final String RUTA_ARCHIVO_MENSAJES = "C:\\td\\persistencia\\archivos\\Mensajes.txt";
+
+    /**
      * Método para guardar una lista de usuarios sin importar si es comprador o anunciante
      * @param listaUsuarios Lista de usuarios a guardar
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
@@ -164,30 +169,36 @@ public class Persistencia {
         String contenidoAnunciantes = "";
         String contenidoPujas = "";
         String contenidoProductos = "";
+        String contenidoMensajes = "";
         for(Usuario usuario : listaUsuarios){
             if(usuario.getiUsuario() instanceof Anunciante){
                 if(usuario.getListaProductos() != null){
                     for(String producto : usuario.getListaProductos()){
-                        contenidoProductos += "<"+usuario.getUsuario()+">@@<"+producto+">\n";
+                        contenidoProductos += usuario.getUsuario()+"@@"+producto+"\n";
                     }
                 }
-                contenidoAnunciantes += "<"+usuario.getUsuario()+">@@<"+usuario.getNombre()+">@@<"
-                        +usuario.getContrasenia()+">@@<"+usuario.getEdad()+">\n";
+                contenidoAnunciantes += usuario.getUsuario()+"@@"+usuario.getNombre()+"@@"
+                        +usuario.getContrasenia()+"@@"+usuario.getEdad()+"\n";
             }
             if(usuario.getiUsuario() instanceof Comprador){
                 if(usuario.getListaProductos() != null){
                     for(String producto : usuario.getListaProductos()){
-                        contenidoPujas += "<"+usuario.getUsuario()+">@@<"+producto+">\n";
+                        contenidoPujas += usuario.getUsuario()+"@@"+producto+"\n";
                     }
                 }
-                contenidoCompradores += "<"+usuario.getUsuario()+">@@<"+usuario.getNombre()+">@@<"
-                        +usuario.getContrasenia()+">@@<"+usuario.getEdad()+">\n";
+                contenidoCompradores += usuario.getUsuario()+"@@"+usuario.getNombre()+"@@"
+                        +usuario.getContrasenia()+"@@"+usuario.getEdad()+"\n";
+            }
+            for(Mensaje mensaje: usuario.getListaMensajes()){
+                contenidoMensajes += mensaje.isEsRecibido()+"@@"+mensaje.getUsuario()+"@@"+mensaje.getMessage()+"@@"+
+                        mensaje.getFecha()+"@@"+usuario.getUsuario()+"\n";
             }
         }
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_ANUNCIANTES, contenidoAnunciantes, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_COMPRADORES, contenidoCompradores, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES, contenidoProductos, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES, contenidoPujas, false);
+        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_MENSAJES, contenidoMensajes, false);
     }
 
 
@@ -201,24 +212,29 @@ public class Persistencia {
         String contenidoAnunciantes = "";
         String contenidoPujas = "";
         String contenidoProductos = "";
+        String contenidoMensajes = "";
         for(Usuario usuario : listaUsuarios){
             if(usuario.getiUsuario() instanceof Anunciante){
                 if(usuario.getListaProductos() != null){
                     for(String producto : usuario.getListaProductos()){
-                        contenidoProductos += "<"+usuario.getUsuario()+">@@<"+producto+">\n";
+                        contenidoProductos += usuario.getUsuario()+"@@"+producto+"\n";
                     }
                 }
-                contenidoAnunciantes += "<"+usuario.getUsuario()+">@@<"+usuario.getNombre()+">@@<"
-                        +usuario.getContrasenia()+">@@<"+usuario.getEdad()+">\n";
+                contenidoAnunciantes += usuario.getUsuario()+"@@"+usuario.getNombre()+"@@"
+                        +usuario.getContrasenia()+"@@"+usuario.getEdad()+"\n";
             }
             if(usuario.getiUsuario() instanceof Comprador){
                 if(usuario.getListaProductos() != null){
                     for(String producto : usuario.getListaProductos()){
-                        contenidoPujas += "<"+usuario.getUsuario()+">@@<"+producto+">\n";
+                        contenidoPujas += usuario.getUsuario()+"@@"+producto+"\n";
                     }
                 }
-                contenidoCompradores += "<"+usuario.getUsuario()+">@@<"+usuario.getNombre()+">@@<"
-                        +usuario.getContrasenia()+">@@<"+usuario.getEdad()+">\n";
+                contenidoCompradores += usuario.getUsuario()+"@@"+usuario.getNombre()+"@@"
+                        +usuario.getContrasenia()+"@@"+usuario.getEdad()+"\n";
+            }
+            for(Mensaje mensaje: usuario.getListaMensajes()){
+                contenidoMensajes += mensaje.isEsRecibido()+"@@"+mensaje.getUsuario()+"@@"+mensaje.getMessage()+"@@"+
+                        mensaje.getFecha()+"@@"+usuario.getUsuario();
             }
         }
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Anunciantes")+".txt",
@@ -229,6 +245,8 @@ public class Persistencia {
                 contenidoProductos, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("PujasCompradores")+".txt",
                 contenidoPujas, false);
+        ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Mensajes")+".txt",
+                contenidoMensajes, false);
     }
 
     /**
@@ -242,13 +260,13 @@ public class Persistencia {
         for(Producto producto : listaProductos){
             if(producto.getListaPuja() != null){
                 for(Puja puja : producto.getListaPuja()){
-                    contenidoPujas += "<"+producto.getNombre()+">@@<"+puja.getUsuario()+">@@<"
-                            +puja.getFecha()+">@@<"+puja.getValor()+">\n";
+                    contenidoPujas += producto.getNombre()+"@@"+puja.getUsuario()+"@@"
+                            +puja.getFecha()+"@@"+puja.getValor()+"\n";
                 }
             }
-            contenidoProductos += "<"+producto.getNombre()+">@@<"+producto.getTipoProducto()+">@@<"+
-                    producto.getValorInicial()+">@@<"+producto.getDescripcion()+">@@<"+producto.getFechaInicio()+">@@<"+
-                    producto.getFechaFin()+">@@<"+producto.isVendido()+">@@<"+producto.getRutaFoto()+">\n";
+            contenidoProductos += producto.getNombre()+"@@"+producto.getTipoProducto()+"@@"+
+                    producto.getValorInicial()+"@@"+producto.getDescripcion()+"@@"+producto.getFechaInicio()+"@@"+
+                    producto.getFechaFin()+"@@"+producto.isVendido()+"@@"+producto.getRutaFoto()+"\n";
         }
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS, contenidoProductos, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS, contenidoPujas, false);
@@ -264,13 +282,13 @@ public class Persistencia {
         String contenidoProductos = "";
         String contenidoPujas = "";
         for(Puja puja : producto.getListaPuja()){
-            contenidoPujas += "<"+producto.getNombre()+">@@<"+puja.getUsuario()+">@@<"
-                    +puja.getFecha()+">@@<"+puja.getValor()+">@@<"+LocalDateTime.now()+">\n";
+            contenidoPujas += producto.getNombre()+"@@"+puja.getUsuario()+"@@"
+                    +puja.getFecha()+"@@"+puja.getValor()+"@@"+LocalDateTime.now()+"\n";
         }
-        contenidoProductos += "<"+producto.getNombre()+">@@<"+producto.getTipoProducto()+">@@<"+
-                producto.getValorInicial()+">@@<"+producto.getDescripcion()+">@@<"+producto.getFechaInicio()+">@@<"+
-                producto.getFechaFin()+">@@<"+producto.isVendido()+">@@<"+producto.getRutaFoto()+">@@<"+
-                LocalDateTime.now()+">\n";
+        contenidoProductos += producto.getNombre()+"@@"+producto.getTipoProducto()+"@@"+
+                producto.getValorInicial()+"@@"+producto.getDescripcion()+"@@"+producto.getFechaInicio()+"@@"+
+                producto.getFechaFin()+"@@"+producto.isVendido()+"@@"+producto.getRutaFoto()+"@@"+
+                LocalDateTime.now()+"\n";
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ELIMINADOS, contenidoProductos, true);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_ELIMINADOS, contenidoPujas, true);
 
@@ -284,7 +302,7 @@ public class Persistencia {
      */
     public static void guardarProductoAnuncianteEliminado(String codigoAnunciante, String nombreProducto) throws IOException {
         String contenidoProductos = "";
-        contenidoProductos += "<"+codigoAnunciante+">@@<"+nombreProducto+">@@<"+LocalDateTime.now()+">\n";
+        contenidoProductos += codigoAnunciante+"@@"+nombreProducto+"@@"+LocalDateTime.now()+"\n";
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES_ELIMINADOS, contenidoProductos, true);
     }
 
@@ -296,7 +314,7 @@ public class Persistencia {
      */
     public static void guardarPujaCompradorEliminado(String codigoAnunciante, String nombreProducto) throws IOException {
         String contenidoProductos = "";
-        contenidoProductos += "<"+codigoAnunciante+">@@<"+nombreProducto+">@@<"+LocalDateTime.now()+">\n";
+        contenidoProductos += codigoAnunciante+"@@"+nombreProducto+"@@"+LocalDateTime.now()+"\n";
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES_ELIMINADOS, contenidoProductos, true);
     }
 
@@ -308,8 +326,8 @@ public class Persistencia {
      */
     public static void guardarPujaEliminada(Puja puja, String producto) throws IOException {
         String contenidoPujas = "";
-        contenidoPujas += "<"+producto+">@@<"+puja.getUsuario()+">@@<"+puja.getFecha()+">@@<"
-                +puja.getValor()+">@@<"+LocalDateTime.now()+">\n";
+        contenidoPujas += producto+"@@"+puja.getUsuario()+"@@"+puja.getFecha()+"@@"
+                +puja.getValor()+"@@"+LocalDateTime.now()+"\n";
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_ELIMINADOS, contenidoPujas, true);
     }
 
@@ -324,13 +342,13 @@ public class Persistencia {
         for(Producto producto : listaProductos){
             if(producto.getListaPuja() != null){
                 for(Puja puja : producto.getListaPuja()){
-                    contenidoPujas += "<"+producto.getNombre()+">@@<"+puja.getUsuario()+">@@<"
-                            +puja.getFecha()+">@@<"+puja.getValor()+">\n";
+                    contenidoPujas += producto.getNombre()+"@@"+puja.getUsuario()+"@@"
+                            +puja.getFecha()+"@@"+puja.getValor()+"\n";
                 }
             }
-            contenidoProductos += "<"+producto.getNombre()+">@@<"+producto.getTipoProducto()+">@@<"+
-                    producto.getValorInicial()+">@@<"+producto.getDescripcion()+">@@<"+producto.getFechaInicio()+">@@<"+
-                    producto.getFechaFin()+">@@<"+producto.isVendido()+">@@<"+producto.getRutaFoto()+">\n";
+            contenidoProductos += producto.getNombre()+"@@"+producto.getTipoProducto()+"@@"+
+                    producto.getValorInicial()+"@@"+producto.getDescripcion()+"@@"+producto.getFechaInicio()+"@@"+
+                    producto.getFechaFin()+"@@"+producto.isVendido()+"@@"+producto.getRutaFoto()+"\n";
         }
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Productos")+".txt",
                 contenidoProductos, false);
@@ -349,13 +367,13 @@ public class Persistencia {
         ArrayList<String> listaCompradores = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_COMPRADORES);
         ArrayList<String> listaProductos = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES);
         ArrayList<String> listaPujas = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES);
+        ArrayList<String> listaMensajes = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_MENSAJES);
 
         for(String anuncianteCargado : listaAnunciantes){
             Usuario usuario = new Usuario();
             usuario.setIUsuario(new Anunciante());
-            anuncianteCargado = deleteFirstAndLastString(anuncianteCargado);
             Scanner scanner = new Scanner(anuncianteCargado);
-            scanner.useDelimiter(">@@<");
+            scanner.useDelimiter("@@");
             while (scanner.hasNext()){
                 usuario.setUsuario(scanner.next());
                 usuario.setNombre(scanner.next());
@@ -363,9 +381,8 @@ public class Persistencia {
                 usuario.setEdad(Integer.parseInt(scanner.next()));
             }
             for(String productoCargado : listaProductos){
-                productoCargado = deleteFirstAndLastString(productoCargado);
                 Scanner scanner1 = new Scanner(productoCargado);
-                scanner1.useDelimiter(">@@<");
+                scanner1.useDelimiter("@@");
                 while (scanner1.hasNext()){
                     String aux = scanner1.next();
                     if(aux.equals(usuario.getUsuario())){
@@ -376,13 +393,11 @@ public class Persistencia {
             }
             listaUsuario.add(usuario);
         }
-
         for(String compradorCargado : listaCompradores){
             Usuario usuario = new Usuario();
             usuario.setIUsuario(new Comprador());
-            compradorCargado = deleteFirstAndLastString(compradorCargado);
             Scanner scanner = new Scanner(compradorCargado);
-            scanner.useDelimiter(">@@<");
+            scanner.useDelimiter("@@");
             while (scanner.hasNext()){
                 usuario.setUsuario(scanner.next());
                 usuario.setNombre(scanner.next());
@@ -390,9 +405,8 @@ public class Persistencia {
                 usuario.setEdad(Integer.parseInt(scanner.next()));
             }
             for(String pujaCargada : listaPujas){
-                pujaCargada = deleteFirstAndLastString(pujaCargada);
                 Scanner scanner1 = new Scanner(pujaCargada);
-                scanner1.useDelimiter(">@@<");
+                scanner1.useDelimiter("@@");
                 while (scanner1.hasNext()){
                     String aux = scanner1.next();
                     if(aux.equals(usuario.getUsuario())){
@@ -402,6 +416,27 @@ public class Persistencia {
             }
             listaUsuario.add(usuario);
         }
+
+        for(String mensajeCargado : listaMensajes){
+            Mensaje mensaje = new Mensaje();
+            String usuarioAux = "";
+            Scanner scanner = new Scanner(mensajeCargado);
+            scanner.useDelimiter("@@");
+            while (scanner.hasNext()){
+                mensaje.setEsRecibido(Boolean.parseBoolean(scanner.next()));
+                mensaje.setUsuario(scanner.next());
+                LocalDateTime localDateTime = LocalDateTime.parse(scanner.next());
+                mensaje.setFecha(localDateTime);
+                usuarioAux = scanner.next();
+            }
+            for(Usuario usuario : listaUsuario){
+                if(usuario.getUsuario().equals(usuarioAux)){
+                    usuario.getListaMensajes().add(mensaje);
+                    break;
+                }
+            }
+        }
+
 
         return  listaUsuario;
     }
@@ -418,9 +453,8 @@ public class Persistencia {
 
         for(String productoCargado : productos){
             Producto producto = new Producto();
-            productoCargado = deleteFirstAndLastString(productoCargado);
             Scanner scanner = new Scanner(productoCargado);
-            scanner.useDelimiter(">@@<");
+            scanner.useDelimiter("@@");
             while (scanner.hasNext()){
                 producto.setNombre(scanner.next());
                 producto.setTipoProducto(scanner.next());
@@ -434,9 +468,8 @@ public class Persistencia {
                 producto.setRutaFoto(scanner.next());
             }
             for(String pujaCargada : pujas){
-                pujaCargada = deleteFirstAndLastString(pujaCargada);
                 Scanner scanner1 = new Scanner(pujaCargada);
-                scanner1.useDelimiter(">@@<");
+                scanner1.useDelimiter("@@");
                 while (scanner1.hasNext()){
                     String aux = scanner1.next();
                     if(aux.equals(producto.getNombre())){
@@ -453,17 +486,6 @@ public class Persistencia {
         }
 
         return listaProducto;
-    }
-
-    /**
-     * Metodo para eliminar el primer y ultimo caracter de una cadena
-     * @param cadena cadena a implementar
-     * @return cadena con el primer y el ultimo caracter eliminado
-     */
-    private static String deleteFirstAndLastString(String cadena){
-        cadena = cadena.substring(1);
-        cadena = cadena.substring(0, cadena.length()-1);
-        return cadena;
     }
 
     /**
@@ -502,10 +524,8 @@ public class Persistencia {
     private static Usuario validarUsuario(String usuario, String contrasenia) throws IOException {
         ArrayList<Usuario> usuarios = Persistencia.cargarUsuarios();
 
-        for (int indiceUsuario = 0; indiceUsuario < usuarios.size(); indiceUsuario++)
-        {
-            Usuario usuarioAux = usuarios.get(indiceUsuario);
-            if(usuarioAux.getUsuario().equalsIgnoreCase(usuario) && usuarioAux.getContrasenia().equalsIgnoreCase(contrasenia)) {
+        for (Usuario usuarioAux : usuarios) {
+            if (usuarioAux.getUsuario().equalsIgnoreCase(usuario) && usuarioAux.getContrasenia().equalsIgnoreCase(contrasenia)) {
                 return usuarioAux;
             }
         }
@@ -590,7 +610,7 @@ public class Persistencia {
     }
 
     /**
-     * Metodo provado para realizar el formato del nombre del archivo de respaldo a implementar
+     * Metodo privado para realizar el formato del nombre del archivo de respaldo a implementar
      * @param fileName Nombre del archivo de respaldo
      * @return Nombre del archivo de respaldo con el formato
      */

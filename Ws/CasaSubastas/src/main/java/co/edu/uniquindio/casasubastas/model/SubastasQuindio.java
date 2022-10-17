@@ -2,52 +2,11 @@ package co.edu.uniquindio.casasubastas.model;
 
 import co.edu.uniquindio.casasubastas.exceptions.*;
 
-import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class SubastasQuindio implements Serializable {
-
-    public static void main(String[] args) {
-        SubastasQuindio subastasQuindio = new SubastasQuindio();
-        try {
-            subastasQuindio.crearAnunciante("penaeste", "1234", "Esteban", 19);
-        } catch (InvalidUserException e) {
-            e.printStackTrace();
-        } catch (ExistingUserException e) {
-            e.printStackTrace();
-        }
-        try {
-           subastasQuindio.crearComprador("penaeste1", "1234", "Esteban1", 19);
-        } catch (InvalidUserException e) {
-            e.printStackTrace();
-        } catch (ExistingUserException e) {
-            e.printStackTrace();
-        }
-        LocalDateTime localDateTime = LocalDateTime.now();
-        try {
-            subastasQuindio.crearProducto("Electro", "Micro", "prueba",
-                                           "co/edu/uniquindio/casasubastas/views/login-view.fxml", localDateTime
-                                            , localDateTime.plusMonths(3), 10000, "Esteban");
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        }  catch (ProductsLimitException e) {
-            e.printStackTrace();
-        }
-        try {
-            subastasQuindio.crearPuja("Micro", "penaeste1", 50000, localDateTime);
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        } catch (ProductNotFoundException e) {
-            e.printStackTrace();
-        } catch (ProductsLimitException e) {
-            e.printStackTrace();
-        } catch (InsufficientBidException e){
-            e.printStackTrace();
-        }
-        System.out.println("Empresa creada");
-    }
 
     /**
      * Lista usuarios
@@ -285,21 +244,17 @@ public class SubastasQuindio implements Serializable {
      * @param nombre nombre del producto de la casa de subastas
      * @param descripcion descripcion del producto de la casa de subastas
      * @param foto foto del producto de la casa de subastas
-     * @param fInicio fecha de publicacion del producto de la casa de subastas
-     * @param fFin fecha donde se termina la publicacion del producto de la casa de subastas
      * @param vInicial valor inicial de la subasta del producto de la casa de subastas
      * @throws ProductNotFoundException Se valida si el producto existe
      */
-    public void editarProducto(String tipoProducto, String nombre, String descripcion, String foto, LocalDateTime fInicio,
-                               LocalDateTime fFin, double vInicial) throws ProductNotFoundException {
+    public void editarProducto(String tipoProducto, String nombre, String descripcion, String foto,
+                               double vInicial) throws ProductNotFoundException {
         for(int i = 0; i< productos.size(); i++){
             if(productos.get(i).getNombre().equals(nombre)){
                 productos.get(i).setTipoProducto(tipoProducto);
                 productos.get(i).setNombre(nombre);
                 productos.get(i).setDescripcion(descripcion);
                 productos.get(i).setRutaFoto(foto);
-                productos.get(i).setFechaInicio(fInicio);
-                productos.get(i).setFechaFin(fFin);
                 productos.get(i).setValorInicial(vInicial);
                 productos.get(i).setVendido(false);
             }else if(i == productos.size()-1){
@@ -400,5 +355,33 @@ public class SubastasQuindio implements Serializable {
             }
         }
         return puja;
+    }
+
+    public void crearMensajeEnviado(String codigoRemitente, String codigoDestinatario, String mensaje){
+        Mensaje mensaje1 = new Mensaje();
+        mensaje1.setUsuario(codigoDestinatario);
+        mensaje1.setMessage(mensaje);
+        mensaje1.setEsRecibido(false);
+        mensaje1.setFecha(LocalDateTime.now());
+        for(Usuario usuario : usuarios){
+            if(usuario.getUsuario().equals(codigoRemitente)){
+                usuario.getListaMensajes().add(mensaje1);
+                break;
+            }
+        }
+    }
+
+    public void crearMensajeRecibido(String codigoRemitente, String codigoDestinatario, String mensaje){
+        Mensaje mensaje1 = new Mensaje();
+        mensaje1.setUsuario(codigoRemitente);
+        mensaje1.setMessage(mensaje);
+        mensaje1.setEsRecibido(true);
+        mensaje1.setFecha(LocalDateTime.now());
+        for(Usuario usuario : usuarios){
+            if(usuario.getUsuario().equals(codigoDestinatario)){
+                usuario.getListaMensajes().add(mensaje1);
+                break;
+            }
+        }
     }
 }

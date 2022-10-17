@@ -32,11 +32,12 @@ public class Usuario implements Serializable {
      */
     private IUsuario iUsuario;
 
-
     /**
      * Lista donde se guardan los nombre de los productos
      */
     ArrayList<String> listaProductos = new ArrayList<>();
+
+    ArrayList<Mensaje> listaMensajes = new ArrayList<>();
 
     /**
      * Constructor vacio de la clase
@@ -179,5 +180,17 @@ public class Usuario implements Serializable {
      */
     public void eliminarProducto(String nombre) {
         listaProductos.remove(nombre);
+    }
+
+    public void setiUsuario(IUsuario iUsuario) {
+        this.iUsuario = iUsuario;
+    }
+
+    public ArrayList<Mensaje> getListaMensajes() {
+        return listaMensajes;
+    }
+
+    public void setListaMensajes(ArrayList<Mensaje> listaMensajes) {
+        this.listaMensajes = listaMensajes;
     }
 }

@@ -16,7 +16,7 @@ public class CasaSubastas extends Application {
         URL url = new File("src/main/java/co/edu/uniquindio/casasubastas/views/login-view.fxml").toURI().toURL();
         Parent root = FXMLLoader.load(url);
         Scene scene = new Scene(root, 280, 300);
-        stage.setTitle("Hello!");
+        stage.setTitle("LogIn");
         stage.setScene(scene);
         stage.show();
     }
