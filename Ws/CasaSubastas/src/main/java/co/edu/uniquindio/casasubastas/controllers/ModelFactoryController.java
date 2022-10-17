@@ -9,6 +9,7 @@ import co.edu.uniquindio.casasubastas.persistencia.Persistencia;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class ModelFactoryController {
 
@@ -158,17 +159,16 @@ public class ModelFactoryController {
     /**
      *Metodo para crear una puja
      * @param nombreProducto Nombre del producto
-     * @param usuarioPujante Usuario que puja por el producto
      * @param valorPujado Valor que se puja por el producto
      * @throws UserNotFoundException Se valida si el usuario existe
      * @throws InsufficientBidException Se valida si la puja hecha es mayor al valor inicial del producto
      * @throws ProductNotFoundException Se valida si el producto existe
      * @throws ProductsLimitException Se valida la cantidad limite de anuncios del usuario
      */
-    public void crearPuja(String nombreProducto, String usuarioPujante, double valorPujado) throws UserNotFoundException, InsufficientBidException, ProductNotFoundException, ProductsLimitException {
+    public void crearPuja(String nombreProducto, double valorPujado) throws UserNotFoundException, InsufficientBidException, ProductNotFoundException, ProductsLimitException {
         LocalDateTime localDateTime = LocalDateTime.now();
-        subastasQuindio.crearPuja(nombreProducto, usuarioPujante, valorPujado, localDateTime);
-        crearRegistroLog("Puja realizada", 1, "Pujar");
+        subastasQuindio.crearPuja(nombreProducto, usuarioLogeado.getUsuario(), valorPujado, localDateTime);
+        crearRegistroLog("Puja realizada por el usuario "+usuarioLogeado.getUsuario(), 1, "Pujar");
         guardarSubastasQuindio();
         guardarRespaldo();
     }
@@ -214,33 +214,32 @@ public class ModelFactoryController {
     /**
      * Metodo para editar una puja
      * @param nombreProducto Nombre del producto
-     * @param usuarioPujante Usuario que puja por el producto
      * @param valorPujado Valor que se puja
      * @param fecha Fecha
      * @throws BidNotFoundException Se valida si la puja existe
      * @throws InsufficientBidException Se valida si la puja hecha es mayor al valor inicial del producto
      * @throws ProductNotFoundException Se valida si el producto existe
      */
-    public void editarPuja(String nombreProducto, String usuarioPujante, double valorPujado, LocalDateTime fecha) throws BidNotFoundException, InsufficientBidException, ProductNotFoundException {
-        subastasQuindio.editarPuja(nombreProducto, usuarioPujante, valorPujado, fecha);
-        crearRegistroLog("La puja del usuario "+ usuarioPujante +" por el producto "+ nombreProducto+ " ha sido editada"
-                            , 1, "Editar puja");
+    public void editarPuja(String nombreProducto, double valorPujado, LocalDateTime fecha) throws BidNotFoundException, InsufficientBidException, ProductNotFoundException {
+        subastasQuindio.editarPuja(nombreProducto, usuarioLogeado.getUsuario(), valorPujado, fecha);
+        crearRegistroLog("La puja del usuario "+ usuarioLogeado.getUsuario() +" por el producto "+
+                        nombreProducto+ " ha sido editada", 1, "Editar puja");
         guardarSubastasQuindio();
         guardarRespaldo();
     }
     /**
      * Metodo para eliminar una puja
      * @param nombreProducto Nombre del producto
-     * @param usuarioPujante Usuario que puja
      * @throws BidNotFoundException Se valida si la puja existe
      * @throws ProductNotFoundException Se valida si el producto existe
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public void eliminarPuja(String nombreProducto, String usuarioPujante) throws BidNotFoundException, ProductNotFoundException, IOException {
-        Puja puja = subastasQuindio.eliminarPuja(nombreProducto, usuarioPujante);
+    public void eliminarPuja(String nombreProducto) throws BidNotFoundException, ProductNotFoundException, IOException {
+        Puja puja = subastasQuindio.eliminarPuja(nombreProducto, usuarioLogeado.getUsuario());
         Persistencia.guardarPujaEliminada(puja, nombreProducto);
-        crearRegistroLog("El usuario "+usuarioPujante+" ha eliminado la puja a el producto "+nombreProducto+" con valor de"
-                +puja.getValor()+" hecha en la fecha "+ puja.getFecha(), 2, "Eliminar puja");
+        crearRegistroLog("El usuario "+usuarioLogeado.getUsuario()+" ha eliminado la puja a el producto "
+                +nombreProducto+" con valor de"+puja.getValor()+" hecha en la fecha "+ puja.getFecha(), 2,
+                "Eliminar puja");
         guardarSubastasQuindio();
         guardarRespaldo();
     }
@@ -299,5 +298,21 @@ public class ModelFactoryController {
                         " ha sido creado", 1, "crearMensaje");
         guardarSubastasQuindio();
         guardarRespaldo();
+    }
+
+    /**
+     * Metodo para retornar la lista de productos de un usuario
+     * @return lista de productos anunciados
+     */
+    public ArrayList<Producto> tomarListaProductoUsuario(){
+        return subastasQuindio.buscarProductosAnunciante(usuarioLogeado.getUsuario());
+    }
+
+    /**
+     * Metodo para retornar la lista de pujas de un usuario
+     * @return lista de pujas
+     */
+    public ArrayList<Puja> tomarListaPujas(){
+        return subastasQuindio.buscarPujasComprador(usuarioLogeado.getUsuario());
     }
 }

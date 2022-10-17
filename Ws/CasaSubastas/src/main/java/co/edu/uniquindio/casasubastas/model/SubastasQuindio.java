@@ -394,4 +394,72 @@ public class SubastasQuindio implements Serializable {
             }
         }
     }
+
+    /**
+     * Metodo para vender un producto
+     * @param nombreProducto nombre del producto vendido
+     */
+    public void venderProducto(String nombreProducto){
+        for (Producto producto : productos){
+            if(producto.getNombre().equals(nombreProducto)){
+                producto.setVendido(true);
+            }
+        }
+        for(Usuario usuario : usuarios){
+            for(int i=0 ; i<usuario.getListaProductos().size(); i++) {
+                if (usuario.getListaProductos().get(i).equals(nombreProducto)) {
+                    usuario.getListaProductos().remove(i);
+                }
+            }
+        }
+    }
+
+    /**
+     * Metodo para tomar la lista de productos anunciados de un usuario
+     * @param codigoUsuario codigo del usuario anunciante
+     * @return lista de productos anunciados
+     */
+    public ArrayList<Producto> buscarProductosAnunciante(String codigoUsuario){
+        ArrayList<Producto> listaProductos = new ArrayList<>();
+        for(Usuario usuario : usuarios){
+            if (usuario.getUsuario().equals(codigoUsuario)){
+                for(String productoAnunciado : usuario.getListaProductos()){
+                    for (Producto producto : productos){
+                        if(producto.getNombre().equals(productoAnunciado)){
+                            listaProductos.add(producto);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        return listaProductos;
+    }
+
+    /**
+     * Metodo para tomar la lista de pujas realizadas de un usuario
+     * @param codigoUsuario codigo del usuario comprador
+     * @return lista de pujas
+     */
+    public ArrayList<Puja> buscarPujasComprador(String codigoUsuario){
+        ArrayList<Puja> listaPujas = new ArrayList<>();
+        for(Usuario usuario : usuarios){
+            if (usuario.getUsuario().equals(codigoUsuario)){
+                for(String productoAnunciado : usuario.getListaProductos()){
+                    for (Producto producto : productos) {
+                        if (producto.getNombre().equals(productoAnunciado)) {
+                            for (Puja puja : producto.getListaPuja()) {
+                                if (puja.getUsuario().equals(codigoUsuario)) {
+                                    listaPujas.add(puja);
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        return listaPujas;
+    }
+
 }
