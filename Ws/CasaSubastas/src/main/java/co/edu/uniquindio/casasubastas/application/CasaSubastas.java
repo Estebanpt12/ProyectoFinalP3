@@ -21,28 +21,18 @@ public class CasaSubastas extends Application {
     }
 
     @Override
-<<<<<<< Updated upstream
-    public void start(Stage stage) throws IOException {
-        URL url = new File("src/main/java/co/edu/uniquindio/casasubastas/views/login-view.fxml").toURI().toURL();
-        Parent root = FXMLLoader.load(url);
-        Scene scene = new Scene(root, 280, 300);
-        stage.setTitle("LogIn");
-        stage.setScene(scene);
-        stage.show();
-=======
     public void start (Stage primaryStage) throws Exception {
 
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Casa Subasta");
         mostrarVentanaPrincipal();
->>>>>>> Stashed changes
     }
 
     public void mostrarVentanaPrincipal(){
 
         try{
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Aplication.class.getResource("views/main-view.fxml"));
+            loader.setLocation(Aplication.class.getResource("../views/login-view.fxml"));
             AnchorPane root = (AnchorPane) loader.load();
             //
             Scene scene = new Scene(root);
