@@ -10,7 +10,7 @@
 
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
   <tabs>
-    <Tab text="Untitled Tab 1">
+    <Tab text="Home">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
@@ -23,18 +23,17 @@
                     </columns>
                   </TableView>
                   <Button layoutX="534.0" layoutY="334.0" mnemonicParsing="false" text="Pujar" />
-                  <Button layoutX="23.0" layoutY="334.0" mnemonicParsing="false" text="Crear anuncio" />
                </children></AnchorPane>
       </content>
     </Tab>
-    <Tab text="Untitled Tab 2">
+    <Tab text="Pujas">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
                   <TableView layoutY="66.0" prefHeight="307.0" prefWidth="600.0">
                     <columns>
-                      <TableColumn prefWidth="75.0" text="C1" />
-                      <TableColumn prefWidth="75.0" text="C2" />
+                      <TableColumn prefWidth="165.60004270076752" text="Producto" />
+                      <TableColumn minWidth="0.0" prefWidth="135.199951171875" text="Puja" />
                     </columns>
                   </TableView>
                   <TextField layoutX="97.0" layoutY="25.0" promptText="Nombre" />
