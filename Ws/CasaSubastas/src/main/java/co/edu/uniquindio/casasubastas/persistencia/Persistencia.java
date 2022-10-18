@@ -3,7 +3,6 @@ package co.edu.uniquindio.casasubastas.persistencia;
 import co.edu.uniquindio.casasubastas.exceptions.*;
 import co.edu.uniquindio.casasubastas.model.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
