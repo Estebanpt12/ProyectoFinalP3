@@ -3,6 +3,7 @@ package co.edu.uniquindio.casasubastas.controllers;
 import co.edu.uniquindio.casasubastas.exceptions.EmptyFieldsException;
 import co.edu.uniquindio.casasubastas.exceptions.InvalidLogInException;
 import co.edu.uniquindio.casasubastas.exceptions.UserNotFoundException;
+import co.edu.uniquindio.casasubastas.model.Comprador;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -69,11 +70,29 @@ public class LoginController {
         try {
             validarFields();
             modelFactoryController.iniciarSesion(usernameTextField.getText(), passwordTextField.getText());
+            if(modelFactoryController.getUsuarioLogeado().getiUsuario() instanceof Comprador){
+                URL url = new File("src/main/java/co/edu/uniquindio/casasubastas/views/comprador_view.fxml").toURI().toURL();
+                Parent root1 = FXMLLoader.load(url);
+                Scene scene1 = new Scene(root1, 786, 400);
+                Stage stage1 = new Stage();
+                stage1.setTitle("Comprador");
+                stage1.setScene(scene1);
+                stage1.show();
+            }else{
+                URL url = new File("src/main/java/co/edu/uniquindio/casasubastas/views/anunciante_view.fxml").toURI().toURL();
+                Parent root1 = FXMLLoader.load(url);
+                Scene scene1 = new Scene(root1, 804, 570);
+                Stage stage1 = new Stage();
+                stage1.setTitle("Anunciante");
+                stage1.setScene(scene1);
+                stage1.show();
+            }
             Stage stage = (Stage) loginBtn.getScene().getWindow();
             stage.close();
         } catch (EmptyFieldsException | UserNotFoundException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         } catch (IOException e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Hubo un error en el sistema");
             modelFactoryController.crearRegistroLog("Error en los archivos del sistema" ,3, "inicioSesion");
         }

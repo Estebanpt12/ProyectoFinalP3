@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.Pane?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="242.0" prefWidth="585.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.casasubastas.controllers.PujasViewController">
+   <children>
+      <TableView fx:id="TablaPujas" prefHeight="242.0" prefWidth="585.0">
+         <columns>
+            <TableColumn fx:id="ColumnValor" prefWidth="294.0" text="Valor" />
+            <TableColumn fx:id="ColumnFecha" minWidth="0.0" prefWidth="290.0" text="Fecha" />
+         </columns>
+      </TableView>
+   </children>
+</Pane>

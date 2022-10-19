@@ -3,7 +3,6 @@ package co.edu.uniquindio.casasubastas.controllers;
 import co.edu.uniquindio.casasubastas.exceptions.EmptyFieldsException;
 import co.edu.uniquindio.casasubastas.exceptions.ProductsLimitException;
 import co.edu.uniquindio.casasubastas.exceptions.UserNotFoundException;
-import co.edu.uniquindio.casasubastas.exceptions.UserNotLoggedException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -70,7 +69,6 @@ public class CrearAnuncioController {
     /**
      *Método para crear un anuncio al oprimir el botón
      *@param event Evento de pulsar el botón
-     *@throws UserNotLoggedException Excepción al intentar crear un anuncio sin haber hecho el login
      */
     @FXML
     void crearAnuncio(ActionEvent event) {
@@ -79,6 +77,7 @@ public class CrearAnuncioController {
             modelFactoryController.crearProducto(comboTipoProducto.getSelectionModel().getSelectedItem(),
                     txtNombreProducto.getText(), txtArDescripcion.getText(), txtRutaImagen.getText(),
                     Double.parseDouble(valorInicialText.getText()));
+            JOptionPane.showMessageDialog(null, "El producto ha sido creado");
             Stage stage = (Stage) btnCrearAnuncio.getScene().getWindow();
             stage.close();
         } catch (EmptyFieldsException | ProductsLimitException e) {
@@ -94,6 +93,7 @@ public class CrearAnuncioController {
     /**
      * Metodo para validar si los fields de la interfaz de usuario estan vacios y para validar el formato del valor inicial
      * @throws EmptyFieldsException excepcion si algun campo esta vacio
+     * @throws NumberFormatException se parsea el valor para validar que es numerico
      */
     private void validarFields() throws EmptyFieldsException, NumberFormatException{
         if(txtNombreProducto.getText().equals("") || comboTipoProducto.getSelectionModel().getSelectedIndex() == 0 ||

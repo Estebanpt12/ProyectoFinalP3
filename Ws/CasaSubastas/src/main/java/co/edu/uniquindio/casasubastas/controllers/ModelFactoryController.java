@@ -26,6 +26,25 @@ public class ModelFactoryController {
      */
     Producto productoEditar;
 
+    Producto productoCreado;
+
+    double valorPujadoEditar;
+
+    /**
+     * Ruta de la imagen que se va a mostrar en la image view
+     */
+    String rutaImageView;
+
+    /**
+     * Producto del que se obtienen las pujas para la Pujas view
+     */
+    Producto productoPujasView;
+
+    /**
+     * Producto para pujar con el comprador
+     */
+    Producto productoPujar;
+
     /**
      * Clase estatica oculta
      */
@@ -42,6 +61,10 @@ public class ModelFactoryController {
     public ModelFactoryController() {
         usuarioLogeado = new Usuario();
         productoEditar = new Producto();
+        rutaImageView = "";
+        productoPujasView = new Producto();
+        productoPujar = new Producto();
+        productoCreado = new Producto();
         cargarResourceXML();
         if(subastasQuindio == null){
             System.out.println("es null");
@@ -188,6 +211,14 @@ public class ModelFactoryController {
         subastasQuindio.crearProducto(tipoProducto, nombre, descripcion, foto, localDateTime,
                 localDateTime.plusMinutes(30), vInicial, usuarioLogeado.getNombre());
         crearRegistroLog("Producto creado", 1, "Creacion");
+        productoCreado.setTipoProducto(tipoProducto);
+        productoCreado.setNombre(nombre);
+        productoCreado.setDescripcion(descripcion);
+        productoCreado.setRutaFoto(foto);
+        productoCreado.setFechaInicio(localDateTime);
+        productoCreado.setFechaFin(localDateTime.plusMinutes(30));
+        productoCreado.setValorInicial(vInicial);
+        productoCreado.setVendido(false);
         guardarRespaldo();
         guardarSubastasQuindio();
     }
@@ -214,14 +245,13 @@ public class ModelFactoryController {
     /**
      * Metodo para editar una puja
      * @param nombreProducto Nombre del producto
-     * @param valorPujado Valor que se puja
-     * @param fecha Fecha
+     * @param puja puja a editar
      * @throws BidNotFoundException Se valida si la puja existe
      * @throws InsufficientBidException Se valida si la puja hecha es mayor al valor inicial del producto
      * @throws ProductNotFoundException Se valida si el producto existe
      */
-    public void editarPuja(String nombreProducto, double valorPujado, LocalDateTime fecha) throws BidNotFoundException, InsufficientBidException, ProductNotFoundException {
-        subastasQuindio.editarPuja(nombreProducto, usuarioLogeado.getUsuario(), valorPujado, fecha);
+    public void editarPuja(String nombreProducto, Puja puja) throws BidNotFoundException, InsufficientBidException, ProductNotFoundException {
+        subastasQuindio.editarPuja(nombreProducto, puja, valorPujadoEditar);
         crearRegistroLog("La puja del usuario "+ usuarioLogeado.getUsuario() +" por el producto "+
                         nombreProducto+ " ha sido editada", 1, "Editar puja");
         guardarSubastasQuindio();
@@ -234,8 +264,8 @@ public class ModelFactoryController {
      * @throws ProductNotFoundException Se valida si el producto existe
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public void eliminarPuja(String nombreProducto) throws BidNotFoundException, ProductNotFoundException, IOException {
-        Puja puja = subastasQuindio.eliminarPuja(nombreProducto, usuarioLogeado.getUsuario());
+    public void eliminarPuja(String nombreProducto, Puja p) throws BidNotFoundException, ProductNotFoundException, IOException {
+        Puja puja = subastasQuindio.eliminarPuja(nombreProducto, p);
         Persistencia.guardarPujaEliminada(puja, nombreProducto);
         crearRegistroLog("El usuario "+usuarioLogeado.getUsuario()+" ha eliminado la puja a el producto "
                 +nombreProducto+" con valor de"+puja.getValor()+" hecha en la fecha "+ puja.getFecha(), 2,
@@ -310,9 +340,68 @@ public class ModelFactoryController {
 
     /**
      * Metodo para retornar la lista de pujas de un usuario
+     * @param nombreProducto nombre del producto
      * @return lista de pujas
+     * @throws BidNotFoundException Si la puja no existe
+     * @throws ProductNotFoundException Si el producto no existe
      */
-    public ArrayList<Puja> tomarListaPujas(){
-        return subastasQuindio.buscarPujasComprador(usuarioLogeado.getUsuario());
+    public ArrayList<Puja> tomarListaPujas(String nombreProducto) throws BidNotFoundException, ProductNotFoundException {
+        return subastasQuindio.buscarPujasComprador(usuarioLogeado.getUsuario(), nombreProducto);
+    }
+
+    public void setUsuarioLogeado(Usuario usuarioLogeado) {
+        this.usuarioLogeado = usuarioLogeado;
+    }
+
+    public Usuario getUsuarioLogeado(){
+        return  this.usuarioLogeado;
+    }
+
+    /**
+     * Tomar la ruta de la image view
+     * @return Ruta de la imagen que se va a mostrar en la image view
+     */
+    public String getRutaImageView() {
+        return rutaImageView;
+    }
+
+    /**
+     * Asignar la ruta de la image view
+     * @param rutaImageView Ruta de la imagen que se va a mostrar en la image view
+     */
+    public void setRutaImageView(String rutaImageView) {
+        this.rutaImageView = rutaImageView;
+    }
+
+    public Producto getProductoPujasView() {
+        return productoPujasView;
+    }
+
+    public void setProductoPujasView(Producto productoPujasView) {
+        this.productoPujasView = productoPujasView;
+    }
+
+    public Producto getProductoPujar() {
+        return productoPujar;
+    }
+
+    public void setProductoPujar(Producto productoPujar) {
+        this.productoPujar = productoPujar;
+    }
+
+    public double getValorPujadoEditar() {
+        return valorPujadoEditar;
+    }
+
+    public void setValorPujadoEditar(double valorPujadoEditar) {
+        this.valorPujadoEditar = valorPujadoEditar;
+    }
+
+    public Producto getProductoCreado() {
+        return productoCreado;
+    }
+
+    public void setProductoCreado(Producto productoCreado) {
+        this.productoCreado = productoCreado;
     }
 }

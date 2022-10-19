@@ -8,21 +8,25 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="786.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.casasubastas.controllers.CompradorController">
   <tabs>
-    <Tab text="Home">
+    <Tab fx:id="TableProductos" text="Productos">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView prefHeight="322.0" prefWidth="600.0">
+                  <Button fx:id="BotonVerPujas" layoutX="41.0" layoutY="332.0" mnemonicParsing="false" onAction="#actionVerPujas" text="Ver Pujas" />
+                  <TableView fx:id="Tabla" prefHeight="322.0" prefWidth="786.0">
                     <columns>
-                      <TableColumn prefWidth="192.0" text="Nombre" />
-                      <TableColumn minWidth="0.0" prefWidth="133.5999755859375" text="Tipo" />
-                        <TableColumn prefWidth="120.0" text="Valor Actual" />
-                        <TableColumn prefWidth="156.7999267578125" text="Descripcion" />
+                      <TableColumn fx:id="ColumnNombre" prefWidth="142.0" text="Nombre" />
+                      <TableColumn fx:id="ColumnTipo" minWidth="0.0" prefWidth="111.0" text="Tipo Producto" />
+                        <TableColumn fx:id="ColumnDescripcion" prefWidth="152.0" text="Descripcion" />
+                        <TableColumn fx:id="ColumnInicio" prefWidth="132.0" text="Fecha inicio" />
+                        <TableColumn fx:id="ColumnFin" prefWidth="138.0" text="Fecha fin" />
+                        <TableColumn fx:id="ColumnValorInicial" prefWidth="110.0" text="Valor inicial" />
                     </columns>
                   </TableView>
-                  <Button layoutX="534.0" layoutY="334.0" mnemonicParsing="false" text="Pujar" />
+                  <Button fx:id="BotonPujar" layoutX="675.0" layoutY="332.0" mnemonicParsing="false" onAction="#actionPujar" prefHeight="25.0" prefWidth="86.0" text="Pujar" />
+                  <Button fx:id="BotonVerImagen" layoutX="144.0" layoutY="332.0" mnemonicParsing="false" onAction="#actionVerImagen" prefHeight="25.0" prefWidth="80.0" text="Ver Imagen" />
                </children></AnchorPane>
       </content>
     </Tab>
@@ -30,14 +34,17 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView layoutY="66.0" prefHeight="307.0" prefWidth="600.0">
+                  <TableView fx:id="TablePujas" layoutX="108.0" layoutY="65.0" prefHeight="242.0" prefWidth="585.0">
                     <columns>
-                      <TableColumn prefWidth="165.60004270076752" text="Producto" />
-                      <TableColumn minWidth="0.0" prefWidth="135.199951171875" text="Puja" />
+                      <TableColumn fx:id="ColumnValor" prefWidth="294.0" text="Valor" />
+                      <TableColumn fx:id="ColumnFecha" minWidth="0.0" prefWidth="290.0" text="Fecha" />
                     </columns>
                   </TableView>
-                  <TextField layoutX="97.0" layoutY="25.0" promptText="Nombre" />
-                  <Button layoutX="274.0" layoutY="25.0" mnemonicParsing="false" text="Buscar" />
+                  <TextField fx:id="TextNombreProducto" layoutX="319.0" layoutY="25.0" promptText="Nombre" />
+                  <Button fx:id="BotonBuscar" layoutX="482.0" layoutY="25.0" mnemonicParsing="false" onAction="#actionBuscar" text="Buscar" />
+                  <Button fx:id="BotonEliminar" layoutX="160.0" layoutY="323.0" mnemonicParsing="false" onAction="#actionEliminarPuja" prefHeight="25.0" prefWidth="97.0" text="Eliminar Puja" />
+                  <Button fx:id="BotonEditar" layoutX="548.0" layoutY="323.0" mnemonicParsing="false" onAction="#actionEditarPuja" prefHeight="25.0" prefWidth="105.0" text="Editar Puja" />
+                  <Button fx:id="BotonRecargar" layoutX="648.0" layoutY="25.0" mnemonicParsing="false" onAction="#actionRecargar" prefHeight="25.0" prefWidth="107.0" text="Recargar Tabla" />
                </children></AnchorPane>
       </content>
     </Tab>
