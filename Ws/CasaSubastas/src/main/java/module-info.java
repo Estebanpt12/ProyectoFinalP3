@@ -11,6 +11,7 @@ module co.edu.uniquindio.casasubastas {
     requires eu.hansolo.tilesfx;
     requires java.logging;
     requires java.desktop;
+    requires javafx.graphics;
 
     exports co.edu.uniquindio.casasubastas.controllers;
     opens co.edu.uniquindio.casasubastas.controllers to javafx.fxml;
