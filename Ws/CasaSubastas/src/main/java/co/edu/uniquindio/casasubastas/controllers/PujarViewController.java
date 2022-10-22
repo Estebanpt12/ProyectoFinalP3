@@ -36,15 +36,20 @@ public class PujarViewController {
             modelFactoryController.crearPuja(modelFactoryController.getProductoPujar().getNombre(),
                     Double.parseDouble(TextPuja.getText()));
             modelFactoryController.setProductoPujar(null);
+            JOptionPane.showMessageDialog(null, "Puja creada");
             Stage stage = (Stage) BotonPuja.getScene().getWindow();
             stage.close();
-        } catch (EmptyFieldsException | ProductsLimitException | InsufficientBidException e) {
+        } catch (EmptyFieldsException | InsufficientBidException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }catch (NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Error en el formato del valor");
         } catch (UserNotFoundException | ProductNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Hubo un error en el sistema");
             modelFactoryController.crearRegistroLog("Error en los archivos del sistema" ,3, "comprador");
+        }catch (ProductsLimitException e){
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            Stage stage = (Stage) BotonPuja.getScene().getWindow();
+            stage.close();
         }
     }
 

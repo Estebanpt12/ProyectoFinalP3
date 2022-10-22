@@ -257,6 +257,7 @@ public class SubastasQuindio implements Serializable {
                 productos.get(i).setRutaFoto(foto);
                 productos.get(i).setValorInicial(vInicial);
                 productos.get(i).setVendido(false);
+                break;
             }else if(i == productos.size()-1){
                 throw new ProductNotFoundException("El producto no ha sido encontrado");
             }
@@ -276,13 +277,14 @@ public class SubastasQuindio implements Serializable {
             if(productos.get(i).getNombre().equals(nombre) && productos.get(i).getTipoProducto().equals(tipoProducto)){
                 producto = productos.get(i);
                 productos.remove(i);
+                break;
             }else if(i == productos.size()-1){
                 throw new ProductNotFoundException("Producto no encontrado");
             }
         }
         for(int i = 0; i<usuarios.size(); i++){
-            for(int j = 0; j<usuarios.size(); j++){
-                if(usuarios.get(i).getListaProductos().get(j).equals(producto.getNombre()) && usuarios.get(i).getiUsuario() instanceof  Anunciante){
+            for(int j = 0; j<usuarios.get(i).getListaProductos().size(); j++){
+                if(usuarios.get(i).getListaProductos().get(j).equals(producto.getNombre())){
                     usuarios.get(i).getListaProductos().remove(j);
                 }
             }
@@ -302,7 +304,7 @@ public class SubastasQuindio implements Serializable {
     public void editarPuja(String nombreProducto, Puja puja, double nuevoValor) throws ProductNotFoundException, BidNotFoundException, InsufficientBidException {
         for(int i = 0; i<productos.size(); i++){
             if(productos.get(i).getNombre().equals(nombreProducto)){
-                for(int j = 0; j<productos.get(i).getListaPuja().size(); i++){
+                for(int j = 0; j<productos.get(i).getListaPuja().size(); j++){
                     if(productos.get(i).getListaPuja().get(j).equals(puja)){
                         if(productos.get(i).getValorInicial() <= nuevoValor){
                             productos.get(i).getListaPuja().get(j).setValor(nuevoValor);
@@ -446,17 +448,36 @@ public class SubastasQuindio implements Serializable {
     public ArrayList<Puja> buscarPujasComprador(String codigoUsuario, String nombreProducto) throws ProductNotFoundException, BidNotFoundException {
         ArrayList<Puja> listaPujas = new ArrayList<>();
         for (int i = 0; i< productos.size(); i++){
-            if(productos.get(i).getNombre().equals(nombreProducto)){
+            if(productos.get(i).getNombre().equals(nombreProducto) && !productos.get(i).isVendido()){
                 for(int j = 0; j<productos.get(i).getListaPuja().size(); j++) {
                     if (productos.get(i).getListaPuja().get(j).getUsuario().equals(codigoUsuario)){
                         listaPujas.add(productos.get(i).getListaPuja().get(j));
-                    }else if(j == productos.get(i).getListaPuja().size() - 1){
+                    }else if(j == productos.get(i).getListaPuja().size() - 1 && listaPujas.size() == 0){
                         throw new BidNotFoundException("No hay pujas hechas para el producto especificado");
                     }
                 }
                 break;
             }else if(i == productos.size() - 1){
                 throw new ProductNotFoundException("El producto no ha sido encontrado");
+            }
+        }
+        return listaPujas;
+    }
+
+    public ArrayList<Puja> buscarPujasProducto(String codigoUsuario, String nombreProducto){
+        ArrayList<Puja> listaPujas = new ArrayList<>();
+        for(Usuario usuario : usuarios){
+            if (usuario.getUsuario().equals(codigoUsuario)){
+                for(String productoAnunciado : usuario.getListaProductos()){
+                    for (Producto producto : productos){
+                        if(producto.getNombre().equals(productoAnunciado) &&producto.getNombre().equals(nombreProducto)
+                                && !producto.isVendido()){
+                            listaPujas = producto.getListaPuja();
+                            break;
+                        }
+                    }
+                }
+                break;
             }
         }
         return listaPujas;

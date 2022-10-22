@@ -30,6 +30,7 @@
                   <Button fx:id="BotonCrear" layoutX="146.0" layoutY="421.0" mnemonicParsing="false" onAction="#actionCrear" prefHeight="25.0" prefWidth="96.0" text="Crear Producto" />
                   <Button fx:id="BotonEditar" layoutX="345.0" layoutY="421.0" mnemonicParsing="false" onAction="#actionEditar" prefHeight="25.0" prefWidth="114.0" text="Editar Producto" />
                   <Button fx:id="BotonEliminar" layoutX="550.0" layoutY="421.0" mnemonicParsing="false" onAction="#actionEliminar" prefHeight="25.0" prefWidth="112.0" text="Eliminar Producto" />
+                  <Button fx:id="botonRecargar" layoutX="673.0" layoutY="32.0" mnemonicParsing="false" onAction="#actionRecargar" text="Recargar tabla" />
                </children>
             </AnchorPane>
         </content>

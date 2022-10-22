@@ -68,7 +68,6 @@ public class EditarAnuncioController {
     /**
      *Método para editar un anuncio al oprimir el botón
      *@param event Evento de pulsar el botón
-     *@throws UserNotLoggedException Excepción al intentar crear un anuncio sin haber hecho el login
      */
     @FXML
     void editarAnuncio(ActionEvent event) {

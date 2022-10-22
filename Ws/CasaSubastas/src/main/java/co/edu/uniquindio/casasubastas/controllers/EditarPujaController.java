@@ -3,7 +3,10 @@ package co.edu.uniquindio.casasubastas.controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import co.edu.uniquindio.casasubastas.exceptions.BidNotFoundException;
 import co.edu.uniquindio.casasubastas.exceptions.EmptyFieldsException;
+import co.edu.uniquindio.casasubastas.exceptions.InsufficientBidException;
+import co.edu.uniquindio.casasubastas.exceptions.ProductNotFoundException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -32,15 +35,18 @@ public class EditarPujaController {
     void ActionEditar(ActionEvent event) {
         try {
             validarField();
-            modelFactoryController.setValorPujadoEditar(Double.parseDouble(TextPuja.getText()));
+            modelFactoryController.editarPuja(modelFactoryController.productoBuscadoEditarPuja, modelFactoryController.getPujaEditar(),
+                    Double.parseDouble(TextPuja.getText()));
             Stage stage = (Stage) BotonEditar.getScene().getWindow();
             stage.close();
-            modelFactoryController.setProductoEditar(null);
             JOptionPane.showMessageDialog(null, "La puja ha sido editada");
-        } catch (EmptyFieldsException e) {
+        } catch (EmptyFieldsException | InsufficientBidException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         } catch (NumberFormatException e){
             JOptionPane.showMessageDialog(null, "El formato del valor es incorrecto");
+        } catch (BidNotFoundException | ProductNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Hubo un error en el sistema");
+            modelFactoryController.crearRegistroLog("Error en los archivos del sistema" ,3, "comprador");
         }
     }
 

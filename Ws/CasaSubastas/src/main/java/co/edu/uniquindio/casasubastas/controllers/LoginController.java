@@ -75,7 +75,7 @@ public class LoginController {
                 Parent root1 = FXMLLoader.load(url);
                 Scene scene1 = new Scene(root1, 786, 400);
                 Stage stage1 = new Stage();
-                stage1.setTitle("Comprador");
+                stage1.setTitle(usernameTextField.getText());
                 stage1.setScene(scene1);
                 stage1.show();
             }else{
@@ -83,7 +83,7 @@ public class LoginController {
                 Parent root1 = FXMLLoader.load(url);
                 Scene scene1 = new Scene(root1, 804, 570);
                 Stage stage1 = new Stage();
-                stage1.setTitle("Anunciante");
+                stage1.setTitle(usernameTextField.getText());
                 stage1.setScene(scene1);
                 stage1.show();
             }

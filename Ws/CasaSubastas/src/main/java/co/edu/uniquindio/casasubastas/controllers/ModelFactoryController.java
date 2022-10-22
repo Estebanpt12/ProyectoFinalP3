@@ -24,11 +24,8 @@ public class ModelFactoryController {
     /**
      *Producto a editar
      */
-    Producto productoEditar;
+    Producto productoEditar = null;
 
-    Producto productoCreado;
-
-    double valorPujadoEditar;
 
     /**
      * Ruta de la imagen que se va a mostrar en la image view
@@ -38,12 +35,16 @@ public class ModelFactoryController {
     /**
      * Producto del que se obtienen las pujas para la Pujas view
      */
-    Producto productoPujasView;
+    Producto productoPujasView = null;
 
     /**
      * Producto para pujar con el comprador
      */
-    Producto productoPujar;
+    Producto productoPujar = null;
+
+    String productoBuscadoEditarPuja;
+
+    Puja pujaEditar = null;
 
     /**
      * Clase estatica oculta
@@ -60,11 +61,7 @@ public class ModelFactoryController {
 
     public ModelFactoryController() {
         usuarioLogeado = new Usuario();
-        productoEditar = new Producto();
         rutaImageView = "";
-        productoPujasView = new Producto();
-        productoPujar = new Producto();
-        productoCreado = new Producto();
         cargarResourceXML();
         if(subastasQuindio == null){
             System.out.println("es null");
@@ -211,14 +208,6 @@ public class ModelFactoryController {
         subastasQuindio.crearProducto(tipoProducto, nombre, descripcion, foto, localDateTime,
                 localDateTime.plusMinutes(30), vInicial, usuarioLogeado.getNombre());
         crearRegistroLog("Producto creado", 1, "Creacion");
-        productoCreado.setTipoProducto(tipoProducto);
-        productoCreado.setNombre(nombre);
-        productoCreado.setDescripcion(descripcion);
-        productoCreado.setRutaFoto(foto);
-        productoCreado.setFechaInicio(localDateTime);
-        productoCreado.setFechaFin(localDateTime.plusMinutes(30));
-        productoCreado.setValorInicial(vInicial);
-        productoCreado.setVendido(false);
         guardarRespaldo();
         guardarSubastasQuindio();
     }
@@ -250,7 +239,7 @@ public class ModelFactoryController {
      * @throws InsufficientBidException Se valida si la puja hecha es mayor al valor inicial del producto
      * @throws ProductNotFoundException Se valida si el producto existe
      */
-    public void editarPuja(String nombreProducto, Puja puja) throws BidNotFoundException, InsufficientBidException, ProductNotFoundException {
+    public void editarPuja(String nombreProducto, Puja puja, double valorPujadoEditar) throws BidNotFoundException, InsufficientBidException, ProductNotFoundException {
         subastasQuindio.editarPuja(nombreProducto, puja, valorPujadoEditar);
         crearRegistroLog("La puja del usuario "+ usuarioLogeado.getUsuario() +" por el producto "+
                         nombreProducto+ " ha sido editada", 1, "Editar puja");
@@ -304,6 +293,14 @@ public class ModelFactoryController {
         guardarSubastasQuindio();
         guardarRespaldo();
     }
+
+    public void vender(String nombeProducto, Puja puja){
+        subastasQuindio.venderProducto(nombeProducto);
+        crearRegistroLog("El producto "+nombeProducto+" ha sido vendido", 2,
+                "Vender Producto");
+        guardarSubastasQuindio();
+        guardarRespaldo();
+    }
     /**
      *Metodo getter de productoEditar
      */
@@ -349,6 +346,10 @@ public class ModelFactoryController {
         return subastasQuindio.buscarPujasComprador(usuarioLogeado.getUsuario(), nombreProducto);
     }
 
+    public ArrayList<Puja> tomarListaPujasProducto(String nombreProducto) throws BidNotFoundException, ProductNotFoundException {
+        return subastasQuindio.buscarPujasProducto(usuarioLogeado.getUsuario(), nombreProducto);
+    }
+
     public void setUsuarioLogeado(Usuario usuarioLogeado) {
         this.usuarioLogeado = usuarioLogeado;
     }
@@ -389,19 +390,19 @@ public class ModelFactoryController {
         this.productoPujar = productoPujar;
     }
 
-    public double getValorPujadoEditar() {
-        return valorPujadoEditar;
+    public String getProductoBuscadoEditarPuja() {
+        return productoBuscadoEditarPuja;
     }
 
-    public void setValorPujadoEditar(double valorPujadoEditar) {
-        this.valorPujadoEditar = valorPujadoEditar;
+    public void setProductoBuscadoEditarPuja(String productoBuscadoEditarPuja) {
+        this.productoBuscadoEditarPuja = productoBuscadoEditarPuja;
     }
 
-    public Producto getProductoCreado() {
-        return productoCreado;
+    public Puja getPujaEditar() {
+        return pujaEditar;
     }
 
-    public void setProductoCreado(Producto productoCreado) {
-        this.productoCreado = productoCreado;
+    public void setPujaEditar(Puja pujaEditar) {
+        this.pujaEditar = pujaEditar;
     }
 }

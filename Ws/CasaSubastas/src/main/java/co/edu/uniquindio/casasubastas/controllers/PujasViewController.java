@@ -45,6 +45,7 @@ public class PujasViewController {
     @FXML
     void initialize() {
         modelFactoryController = ModelFactoryController.getInstance();
+        loadTable();
         assert ColumnFecha != null : "fx:id=\"ColumnFecha\" was not injected: check your FXML file 'pujas_view.fxml'.";
         assert ColumnValor != null : "fx:id=\"ColumnValor\" was not injected: check your FXML file 'pujas_view.fxml'.";
         assert TablaPujas != null : "fx:id=\"TablaPujas\" was not injected: check your FXML file 'pujas_view.fxml'.";

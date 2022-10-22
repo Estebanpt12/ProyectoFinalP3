@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class Persistencia {
 
-    public static void main(String[] args) throws IOException {
+    /*public static void main(String[] args) throws IOException {
         SubastasQuindio subastasQuindio = new SubastasQuindio();
         try {
             subastasQuindio.crearAnunciante("penaeste", "1234", "Esteban", 19);
@@ -81,7 +81,7 @@ public class Persistencia {
             e.printStackTrace();
         }
         SubastasQuindio subastasQuindio1 = cargarRecursoCasaBinario();
-    }
+    }*/
 
     /**
      * Ruta del archivo de los usuarios compradores
@@ -509,7 +509,7 @@ public class Persistencia {
         if(validarUsuario(usuario, contrasenia) != null) {
             return validarUsuario(usuario, contrasenia);
         }else {
-            throw new UserNotFoundException("Usuario no existe");
+            throw new UserNotFoundException("Combinacion erronea");
         }
     }
 

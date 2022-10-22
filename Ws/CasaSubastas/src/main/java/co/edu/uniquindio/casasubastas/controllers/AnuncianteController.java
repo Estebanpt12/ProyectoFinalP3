@@ -4,8 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import co.edu.uniquindio.casasubastas.exceptions.BidNotFoundException;
+import co.edu.uniquindio.casasubastas.exceptions.EmptyFieldsException;
+import co.edu.uniquindio.casasubastas.exceptions.ProductNotFoundException;
 import co.edu.uniquindio.casasubastas.model.Producto;
 import co.edu.uniquindio.casasubastas.model.Puja;
 import javafx.collections.FXCollections;
@@ -86,20 +90,43 @@ public class AnuncianteController {
     @FXML
     private TextField txtNombreProducto;
 
+    @FXML
+    private Button botonRecargar;
+
+    private String nombreProductoBuscado = "";
+
     private ObservableList<Producto> productos = FXCollections.observableArrayList();
+    private ObservableList<Puja> pujas = FXCollections.observableArrayList();
 
     @FXML
     void actionBuscar(ActionEvent event) {
-
+        try {
+            validarFieldBuscar();
+            pujas.clear();
+            pujas.addAll(modelFactoryController.tomarListaPujasProducto(txtNombreProducto.getText()));
+            TablaPujas.setItems(pujas);
+            nombreProductoBuscado = txtNombreProducto.getText();
+        } catch (EmptyFieldsException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }catch (BidNotFoundException | ProductNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Hubo un error en el sistema");
+            modelFactoryController.crearRegistroLog("Error en los archivos del sistema", 3, "anunciante");
+        }
     }
 
-    //TODO Agregar boton actualizar
+    private void validarFieldBuscar() throws EmptyFieldsException {
+        if(txtNombreProducto.getText().equals("")){
+            throw new EmptyFieldsException("El valor esta vacio");
+        }
+    }
+
     @FXML
     void actionCrear(ActionEvent event) {
         try{
             URL url = new File("src/main/java/co/edu/uniquindio/casasubastas/views/crear_anuncio_view.fxml").toURI().toURL();
             Parent root1 = FXMLLoader.load(url);
-            Scene scene1 = new Scene(root1, 600, 643);
+            Scene scene1 = new Scene(root1, 600, 543);
             Stage stage1 = new Stage();
             stage1.setTitle("Crear anuncio");
             stage1.setScene(scene1);
@@ -112,17 +139,60 @@ public class AnuncianteController {
 
     @FXML
     void actionEditar(ActionEvent event) {
+        try{
+            Producto producto = TablaProductos.getSelectionModel().getSelectedItem();
+            modelFactoryController.setProductoEditar(TablaProductos.getSelectionModel().getSelectedItem());
+            URL url = new File("src/main/java/co/edu/uniquindio/casasubastas/views/editar_anuncio_view.fxml").toURI().toURL();
+            Parent root1 = FXMLLoader.load(url);
+            Scene scene1 = new Scene(root1, 600, 543);
+            Stage stage1 = new Stage();
+            stage1.setTitle("Editar anuncio");
+            stage1.setScene(scene1);
+            stage1.show();
+        }catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Hubo un error en el sistema");
+            modelFactoryController.crearRegistroLog("Error en los archivos del sistema", 3, "anunciante");
+        }catch (NullPointerException e){
+            JOptionPane.showMessageDialog(null, "Seleccione un producto de la tabla");
+        }
+    }
 
+    @FXML
+    void actionRecargar(ActionEvent event) {
+        productos.clear();
+        productos.addAll(modelFactoryController.tomarListaProductoUsuario());
+        TablaProductos.setItems(productos);
     }
 
     @FXML
     void actionEliminar(ActionEvent event) {
-
+        try {
+            Producto producto = TablaProductos.getSelectionModel().getSelectedItem();
+            modelFactoryController.eliminarProducto(producto.getTipoProducto(), producto.getNombre());
+            JOptionPane.showMessageDialog(null, "Producto eliminado");
+        } catch (ProductNotFoundException | IOException e) {
+            JOptionPane.showMessageDialog(null, "Hubo un error en el sistema");
+            modelFactoryController.crearRegistroLog("Error en los archivos del sistema" ,3, "comprador");
+        } catch (NullPointerException e){
+            JOptionPane.showMessageDialog(null, "Seleccione una puja de la tabla");
+        }
     }
 
     @FXML
     void actionVender(ActionEvent event) {
+        try {
+            validarTablaPuja();
+            modelFactoryController.vender(nombreProductoBuscado, TablaPujas.getSelectionModel().getSelectedItem());
+            JOptionPane.showMessageDialog(null, "El producto ha sido vendido");
+        } catch (EmptyFieldsException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
 
+    private void validarTablaPuja() throws EmptyFieldsException {
+        if(TablaPujas.getSelectionModel().getSelectedItem() == null){
+            throw new EmptyFieldsException("No hay puja seleccionada");
+        }
     }
 
     private void loadTable(){
@@ -132,6 +202,8 @@ public class AnuncianteController {
         ColumnInicio.setCellValueFactory(new PropertyValueFactory<>("FechaInicio"));
         ColumnFin.setCellValueFactory(new PropertyValueFactory<>("FechaFin"));
         ColumnValorInicial.setCellValueFactory(new PropertyValueFactory<>("ValorInicial"));
+        ColumnValor.setCellValueFactory(new PropertyValueFactory<>("Valor"));
+        ColumnComprador.setCellValueFactory(new PropertyValueFactory<>("Usuario"));
         productos.clear();
         productos.addAll(modelFactoryController.tomarListaProductoUsuario());
         TablaProductos.setItems(productos);
@@ -158,6 +230,7 @@ public class AnuncianteController {
         assert TablaPujas != null : "fx:id=\"TablaPujas\" was not injected: check your FXML file 'anunciante_view.fxml'.";
         assert titleLabel1 != null : "fx:id=\"titleLabel1\" was not injected: check your FXML file 'anunciante_view.fxml'.";
         assert txtNombreProducto != null : "fx:id=\"txtNombreProducto\" was not injected: check your FXML file 'anunciante_view.fxml'.";
+        assert botonRecargar != null : "fx:id=\"botonRecargar\" was not injected: check your FXML file 'anunciante_view.fxml'.";
 
     }
 

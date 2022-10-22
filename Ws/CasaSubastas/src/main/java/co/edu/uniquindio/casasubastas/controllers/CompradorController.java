@@ -100,16 +100,15 @@ public class CompradorController {
 
     private ObservableList<Producto> productos = FXCollections.observableArrayList();
     private ObservableList<Puja> pujas = FXCollections.observableArrayList();
-    private String productoBuscado = "";
 
     @FXML
     void actionRecargar(ActionEvent event) {
-        if(productoBuscado.equals("")){
+        if(modelFactoryController.productoBuscadoEditarPuja.equals("")){
             JOptionPane.showMessageDialog(null, "Primero busque un producto");
         }else {
             try {
                 pujas.clear();
-                pujas.addAll(modelFactoryController.tomarListaPujas(productoBuscado));
+                pujas.addAll(modelFactoryController.tomarListaPujas(modelFactoryController.productoBuscadoEditarPuja));
                 TablePujas.setItems(pujas);
             } catch (BidNotFoundException | ProductNotFoundException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
@@ -121,7 +120,7 @@ public class CompradorController {
     void actionBuscar(ActionEvent event) {
         try {
             validarFieldBuscar();
-            productoBuscado = TextNombreProducto.getText();
+            modelFactoryController.productoBuscadoEditarPuja = TextNombreProducto.getText();
             pujas.clear();
             pujas.addAll(modelFactoryController.tomarListaPujas(TextNombreProducto.getText()));
             TablePujas.setItems(pujas);
@@ -144,6 +143,7 @@ public class CompradorController {
     void actionEditarPuja(ActionEvent event) {
         try{
             validarTablaPujas();
+            modelFactoryController.setPujaEditar(TablePujas.getSelectionModel().getSelectedItem());
             URL url = new File("src/main/java/co/edu/uniquindio/casasubastas/views/editar_puja_view.fxml").toURI().toURL();
             Parent root1 = FXMLLoader.load(url);
             Scene scene1 = new Scene(root1, 260, 115);
@@ -151,11 +151,10 @@ public class CompradorController {
             stage1.setTitle("Editar puja");
             stage1.setScene(scene1);
             stage1.show();
-            modelFactoryController.editarPuja(productoBuscado, TablePujas.getSelectionModel().getSelectedItem());
-        }catch (IOException | BidNotFoundException | ProductNotFoundException e){
+        }catch (IOException e){
             JOptionPane.showMessageDialog(null, "Hubo un error en el sistema");
             modelFactoryController.crearRegistroLog("Error en los archivos del sistema" ,3, "comprador");
-        }catch (NullPointerException | InsufficientBidException e){
+        }catch (NullPointerException e){
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
@@ -172,7 +171,7 @@ public class CompradorController {
     @FXML
     void actionEliminarPuja(ActionEvent event) {
         try{
-            modelFactoryController.eliminarPuja(productoBuscado, TablePujas.getSelectionModel().getSelectedItem());
+            modelFactoryController.eliminarPuja(modelFactoryController.productoBuscadoEditarPuja, TablePujas.getSelectionModel().getSelectedItem());
             pujas.remove(TablePujas.getSelectionModel().getSelectedItem());
             TablePujas.setItems(pujas);
             JOptionPane.showMessageDialog(null, "La puja ha sido borrada");
@@ -228,7 +227,7 @@ public class CompradorController {
             modelFactoryController.setProductoPujasView(Tabla.getSelectionModel().getSelectedItem());
             URL url = new File("src/main/java/co/edu/uniquindio/casasubastas/views/pujas_view.fxml").toURI().toURL();
             Parent root1 = FXMLLoader.load(url);
-            Scene scene1 = new Scene(root1, 572, 400);
+            Scene scene1 = new Scene(root1, 585, 242);
             Stage stage1 = new Stage();
             stage1.setTitle("Pujas de producto");
             stage1.setScene(scene1);
@@ -254,8 +253,19 @@ public class CompradorController {
         ColumnValor.setCellValueFactory(new PropertyValueFactory<>("Valor"));
         ColumnFecha.setCellValueFactory(new PropertyValueFactory<>("Fecha"));
         productos.clear();
-        productos.addAll(modelFactoryController.getSubastasQuindio().getProductos());
+        productos.addAll(loadProducts());
         Tabla.setItems(productos);
+    }
+
+    private ArrayList<Producto> loadProducts(){
+        ArrayList<Producto> listaAuxiliar = new ArrayList<>();
+        for (int i = 0; i< modelFactoryController.getSubastasQuindio().getProductos().size(); i++){
+            if(!modelFactoryController.getSubastasQuindio().getProductos().get(i).isVendido() &&
+                    modelFactoryController.getSubastasQuindio().getProductos().get(i).getFechaFin().isAfter(LocalDateTime.now())){
+                listaAuxiliar.add(modelFactoryController.getSubastasQuindio().getProductos().get(i));
+            }
+        }
+        return listaAuxiliar;
     }
 
     @FXML
