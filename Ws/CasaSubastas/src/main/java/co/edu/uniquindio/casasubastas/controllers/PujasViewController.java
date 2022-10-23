@@ -21,18 +21,30 @@ public class PujasViewController {
 
     @FXML
     private URL location;
+    /**
+     *Columna de la tabla correspondiente a la fecha
+     */
 
     @FXML
     private TableColumn<Puja, LocalDateTime> ColumnFecha;
+    /**
+     * Columna de la tabla correspondiente al valor del producto
+     */
 
     @FXML
     private TableColumn<Puja, Double> ColumnValor;
-
+    /**
+     * Tabla de pujas
+     */
     @FXML
     private TableView<Puja> TablaPujas;
-
+    /**
+     *ObservableList de pujas
+     */
     private ObservableList<Puja> pujas = FXCollections.observableArrayList();
-
+    /**
+     * Metodo para cargar la tabla
+     */
     private void loadTable(){
         ColumnValor.setCellValueFactory(new PropertyValueFactory<>("Valor"));
         ColumnFecha.setCellValueFactory(new PropertyValueFactory<>("Fecha"));

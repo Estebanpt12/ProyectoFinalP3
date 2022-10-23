@@ -41,9 +41,13 @@ public class ModelFactoryController {
      * Producto para pujar con el comprador
      */
     Producto productoPujar = null;
-
+    /**
+     * Producto buscado para editar su puja
+     */
     String productoBuscadoEditarPuja;
-
+    /**
+     * Puja que se va a editar
+     */
     Puja pujaEditar = null;
 
     /**
@@ -293,10 +297,14 @@ public class ModelFactoryController {
         guardarSubastasQuindio();
         guardarRespaldo();
     }
-
-    public void vender(String nombeProducto, Puja puja){
-        subastasQuindio.venderProducto(nombeProducto);
-        crearRegistroLog("El producto "+nombeProducto+" ha sido vendido", 2,
+    /**
+     *Metodo para vender un producto
+     * @param puja Puja ganadora
+     * @param nombreProducto Nombre del producto
+     */
+    public void vender(String nombreProducto, Puja puja){
+        subastasQuindio.venderProducto(nombreProducto);
+        crearRegistroLog("El producto "+nombreProducto+" ha sido vendido", 2,
                 "Vender Producto");
         guardarSubastasQuindio();
         guardarRespaldo();
@@ -345,14 +353,25 @@ public class ModelFactoryController {
     public ArrayList<Puja> tomarListaPujas(String nombreProducto) throws BidNotFoundException, ProductNotFoundException {
         return subastasQuindio.buscarPujasComprador(usuarioLogeado.getUsuario(), nombreProducto);
     }
-
+    /**
+     * Metodo para retornar la lista de pujas de un producto
+     * @param nombreProducto nombre del producto
+     * @return lista de pujas
+     * @throws BidNotFoundException Si la puja no existe
+     * @throws ProductNotFoundException Si el producto no existe
+     */
     public ArrayList<Puja> tomarListaPujasProducto(String nombreProducto) throws BidNotFoundException, ProductNotFoundException {
         return subastasQuindio.buscarPujasProducto(usuarioLogeado.getUsuario(), nombreProducto);
     }
-
+    /**
+     *Metodo para asignar el usuario logeado
+     */
     public void setUsuarioLogeado(Usuario usuarioLogeado) {
         this.usuarioLogeado = usuarioLogeado;
     }
+    /**
+     *Metodo para obtener el usuario logeado
+     */
 
     public Usuario getUsuarioLogeado(){
         return  this.usuarioLogeado;
@@ -373,35 +392,51 @@ public class ModelFactoryController {
     public void setRutaImageView(String rutaImageView) {
         this.rutaImageView = rutaImageView;
     }
-
+    /**
+     *Metodo para obtener el producto de la Pujas view
+     */
     public Producto getProductoPujasView() {
         return productoPujasView;
     }
-
+    /**
+     *Metodo para asignar el producto  para la Pujas view
+     */
     public void setProductoPujasView(Producto productoPujasView) {
         this.productoPujasView = productoPujasView;
     }
-
+    /**
+     * Metodo para obtener el Producto por el que se va a pujar
+     */
     public Producto getProductoPujar() {
         return productoPujar;
     }
-
+    /**
+     * Metodo para asignar el producto para pujar
+     */
     public void setProductoPujar(Producto productoPujar) {
         this.productoPujar = productoPujar;
     }
-
+    /**
+     * Metodo para obtener el producto del cual se busca editar una puja
+     */
     public String getProductoBuscadoEditarPuja() {
         return productoBuscadoEditarPuja;
     }
-
+    /**
+     * Metodo para asignar el el producto del cual se busca editar una puja
+     */
     public void setProductoBuscadoEditarPuja(String productoBuscadoEditarPuja) {
         this.productoBuscadoEditarPuja = productoBuscadoEditarPuja;
     }
-
+    /**
+     *Metodo para obtener la puja que se va a editar
+     */
     public Puja getPujaEditar() {
         return pujaEditar;
     }
-
+    /**
+     *Metodo para asignar la puja que se va a editar
+     */
     public void setPujaEditar(Puja pujaEditar) {
         this.pujaEditar = pujaEditar;
     }

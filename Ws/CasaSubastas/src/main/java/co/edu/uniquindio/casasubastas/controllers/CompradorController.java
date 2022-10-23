@@ -41,66 +41,133 @@ public class CompradorController {
     @FXML
     private URL location;
 
+    /**
+     *Boton para buscar
+     */
+
     @FXML
     private Button BotonBuscar;
+    /**
+     *Boton para editar
+     */
 
     @FXML
     private Button BotonEditar;
+    /**
+     *Boton para eliminar
+     */
 
     @FXML
     private Button BotonEliminar;
+    /**
+     * Boton para pujar
+     * */
 
     @FXML
     private Button BotonPujar;
+    /**
+     * Boton para ver la imagen
+     */
 
     @FXML
     private Button BotonVerImagen;
+    /**
+     * Boton para ver las pujas
+     */
 
     @FXML
     private Button BotonVerPujas;
+    /**
+     * Columna de la tabla correspondiente a la descripcion del producto
+     */
 
     @FXML
     private TableColumn<Producto, String> ColumnDescripcion;
+    /**
+     * Columna de la tabla correspondiente a la fecha
+     */
 
     @FXML
     private TableColumn<Puja, LocalDateTime> ColumnFecha;
+    /**
+     * Columna de la tabla correspondiente a la fecha de finalizacion del anuncio
+     */
 
     @FXML
     private TableColumn<Producto, LocalDateTime> ColumnFin;
+    /**
+     * Columna de la tabla correspondiente a la fecha de inicio del anuncio
+     * */
 
     @FXML
     private TableColumn<Producto, LocalDateTime> ColumnInicio;
+    /**
+     * Columna de la tabla correspondiente al nombre
+     */
 
     @FXML
     private TableColumn<Producto, String> ColumnNombre;
+    /**
+     * Columna de la tabla correspondiente al tipo del producto
+     */
 
     @FXML
     private TableColumn<Producto, String> ColumnTipo;
+    /**
+     * Columna de la tabla correspondiente al valor del producto
+     */
 
     @FXML
     private TableColumn<Puja, Double> ColumnValor;
 
+    /**
+     * Columna de la tabla correspondiente al valor inicial del producto
+     */
+
     @FXML
     private TableColumn<Producto, Double> ColumnValorInicial;
+    /**
+     * Tabla de productos
+     */
 
     @FXML
     private TableView<Producto> Tabla;
+    /**
+     * Tab de productos
+     */
 
     @FXML
     private Tab TableProductos;
+    /**
+     *Tabla de pujas
+     */
 
     @FXML
     private TableView<Puja> TablePujas;
+    /**
+     *TextField para ingresar el nombre del producto
+     */
 
     @FXML
     private TextField TextNombreProducto;
 
+    /**
+     *Boton para recargar
+     */
     @FXML
     private Button BotonRecargar;
-
+    /**
+     *ObservableList de productos
+     */
     private ObservableList<Producto> productos = FXCollections.observableArrayList();
+    /**
+     *ObservableList de pujas
+     */
     private ObservableList<Puja> pujas = FXCollections.observableArrayList();
-
+    /**
+     * Accion de recargar al pulsar el boton
+     * @param event Evento de pulsar el boton
+     */
     @FXML
     void actionRecargar(ActionEvent event) {
         if(modelFactoryController.productoBuscadoEditarPuja.equals("")){
@@ -115,7 +182,10 @@ public class CompradorController {
             }
         }
     }
-
+    /**
+     * Accion de buscar al presionaer el boton
+     * @param event Evento de pulsar el boton
+     */
     @FXML
     void actionBuscar(ActionEvent event) {
         try {
@@ -138,6 +208,10 @@ public class CompradorController {
             throw new EmptyFieldsException("El campo esta vacio");
         }
     }
+    /**
+     * Metodo para editar una puja al presionar el boton
+     * @param event Evento de presionar el boton
+     */
 
     @FXML
     void actionEditarPuja(ActionEvent event) {
@@ -167,7 +241,10 @@ public class CompradorController {
             throw new NullPointerException("Selecciones una fila de la tabla");
         }
     }
-
+    /**
+     * Metodo para eliminar una puja al presionar el boton correspondiente
+     * @param event Evento de presionar el boton
+     * */
     @FXML
     void actionEliminarPuja(ActionEvent event) {
         try{
@@ -182,7 +259,10 @@ public class CompradorController {
             modelFactoryController.crearRegistroLog("Error en los archivos del sistema" ,3, "comprador");
         }
     }
-
+    /**
+     * Metodo para realizar una puja al presionar el boton
+     * @param event Evento de pulsar el boton
+     */
     @FXML
     void actionPujar(ActionEvent event) {
         try{
@@ -201,7 +281,10 @@ public class CompradorController {
             JOptionPane.showMessageDialog(null, "Seleccione un producto de la tabla");
         }
     }
-
+    /**
+     * Metodo para ver la imagen del producto al presionar el boton correspondiente
+     * @param event Evento de presionar el boton
+     */
     @FXML
     void actionVerImagen(ActionEvent event) {
         try{
@@ -220,7 +303,10 @@ public class CompradorController {
             JOptionPane.showMessageDialog(null, "Seleccione un producto de la tabla");
         }
     }
-
+    /**
+     * Metodo para ver las pujas al presionar el boton
+     * @param event Evento de presionar el boton
+     */
     @FXML
     void actionVerPujas(ActionEvent event) {
         try{
@@ -256,7 +342,9 @@ public class CompradorController {
         productos.addAll(loadProducts());
         Tabla.setItems(productos);
     }
-
+    /**
+     * Metodo para cargar los productos
+     */
     private ArrayList<Producto> loadProducts(){
         ArrayList<Producto> listaAuxiliar = new ArrayList<>();
         for (int i = 0; i< modelFactoryController.getSubastasQuindio().getProductos().size(); i++){

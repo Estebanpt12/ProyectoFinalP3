@@ -16,7 +16,9 @@ public class ImageViewController {
 
     @FXML
     private URL location;
-
+    /**
+     * ImageView para visualizar la imagen
+     */
     @FXML
     private ImageView Image;
 
@@ -26,7 +28,9 @@ public class ImageViewController {
         assert Image != null : "fx:id=\"Image\" was not injected: check your FXML file 'imagen_view.fxml'.";
         loadImage();
     }
-
+    /**
+     *Metodo para cargar la imagen
+     */
     private void loadImage(){
         File file = new File(modelFactoryController.getRutaImageView());
         Image image = new Image(file.toURI().toString());

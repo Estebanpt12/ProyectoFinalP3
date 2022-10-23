@@ -38,66 +38,126 @@ public class AnuncianteController {
 
     @FXML
     private URL location;
-
+    /**
+     *Boton para buscar
+     */
     @FXML
     private Button BotonBuscar;
-
+    /**
+     *Boton para crear un anuncio
+     */
     @FXML
     private Button BotonCrear;
-
+    /**
+     *Boton para editar
+     */
     @FXML
     private Button BotonEditar;
 
+    /**
+     * Boton para eliminar
+     * */
+
     @FXML
     private Button BotonEliminar;
+    /**
+     * Boton para vender
+     * */
 
     @FXML
     private Button BotonVender;
 
+    /**
+     * Columna de la tabla correspondiente al comprador
+     * */
     @FXML
     private TableColumn<Puja, String> ColumnComprador;
 
+    /**
+     * Columna de la tabla correspondiente a la descripcion del producto
+     */
     @FXML
     private TableColumn<Producto, String> ColumnDescripcion;
+    /**
+     *Columna de la tabla correspondiente a la fecha de finalizacion del anuncio
+     */
 
     @FXML
     private TableColumn<Producto, LocalDateTime> ColumnFin;
+    /**
+     * Columna de la tabla correspondiente a la fecha de inicio del anuncio
+     */
 
     @FXML
     private TableColumn<Producto, LocalDateTime> ColumnInicio;
+    /**
+     * Columna de la tabla correspondiente al nombre
+     */
 
     @FXML
     private TableColumn<Producto, LocalDateTime> ColumnNombre;
+    /**
+     * Columna de la tabla correspondiente al tipo del producto
+     */
 
     @FXML
     private TableColumn<Producto, LocalDateTime> ColumnTipo;
+    /**
+     * Columna de la tabla correspondiente al valor pujado
+     * */
 
     @FXML
     private TableColumn<Puja, Double> ColumnValor;
+    /**
+     * Columna de la tabla correspondiente al valor con el que un producto inicia la subasta
+     */
 
     @FXML
     private TableColumn<Producto, LocalDateTime> ColumnValorInicial;
+    /**
+     * Tabla que muestra los productos
+     */
 
     @FXML
     private TableView<Producto> TablaProductos;
+    /**
+     * Tabla que muestra las pujas
+     */
 
     @FXML
     private TableView<Puja> TablaPujas;
+    /**
+     * Label correspondiente al titulo
+     */
 
     @FXML
     private Label titleLabel1;
-
+    /**
+     * TextField para ingresar el nombre de un producto
+     */
     @FXML
     private TextField txtNombreProducto;
-
+    /**
+     * Boton para recargar
+     * */
     @FXML
     private Button botonRecargar;
-
+    /**
+     * String con el nombre del producto buscado
+     */
     private String nombreProductoBuscado = "";
-
+    /**
+     * ObservableList de productos
+     */
     private ObservableList<Producto> productos = FXCollections.observableArrayList();
+    /**
+     * ObservableList de pujas
+     */
     private ObservableList<Puja> pujas = FXCollections.observableArrayList();
-
+    /**
+     * Metodo para buscar al pulsar el boton correspondiente
+     * @param event Evento de pulsar el boton
+     */
     @FXML
     void actionBuscar(ActionEvent event) {
         try {
@@ -114,13 +174,19 @@ public class AnuncianteController {
             modelFactoryController.crearRegistroLog("Error en los archivos del sistema", 3, "anunciante");
         }
     }
-
+    /**
+     * Metodo para validar si el producto a buscar esta vacio
+     * @throws EmptyFieldsException Se valida si el cmapo esta vacio
+     */
     private void validarFieldBuscar() throws EmptyFieldsException {
         if(txtNombreProducto.getText().equals("")){
             throw new EmptyFieldsException("El valor esta vacio");
         }
     }
-
+    /**
+     * Metodo para crear un anuncio al pulsar el boton correspondiente
+     * @param event Evento de pulsar el boton
+     * */
     @FXML
     void actionCrear(ActionEvent event) {
         try{
@@ -136,7 +202,10 @@ public class AnuncianteController {
             modelFactoryController.crearRegistroLog("Error en los archivos del sistema", 3, "anunciante");
         }
     }
-
+    /**
+     * Metodo para editar al pulsar el boton correspondiente
+     * @param event Evento de pulsar el boton
+     * */
     @FXML
     void actionEditar(ActionEvent event) {
         try{
@@ -156,14 +225,20 @@ public class AnuncianteController {
             JOptionPane.showMessageDialog(null, "Seleccione un producto de la tabla");
         }
     }
-
+    /**
+     * Método para recargar al pulsar el boton correspondiente
+     * @param event Evento de pulsar el boton
+     */
     @FXML
     void actionRecargar(ActionEvent event) {
         productos.clear();
         productos.addAll(modelFactoryController.tomarListaProductoUsuario());
         TablaProductos.setItems(productos);
     }
-
+    /**
+     * Metodo para eliminar al pulsar el boton correspondiente
+     * @param event Evento de pulsar el boton
+     * */
     @FXML
     void actionEliminar(ActionEvent event) {
         try {
@@ -177,7 +252,10 @@ public class AnuncianteController {
             JOptionPane.showMessageDialog(null, "Seleccione una puja de la tabla");
         }
     }
-
+    /**
+     * Metodo para realizar la accion de vender al pulsar el boton correspondiente
+     * @param event Evento de pulsar el boton
+     * */
     @FXML
     void actionVender(ActionEvent event) {
         try {
@@ -188,13 +266,18 @@ public class AnuncianteController {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
-
+    /**
+     *Metodo para validar si se ha seleccionado una puja de la tabla
+     * @throws EmptyFieldsException Excepcion que valida si hay campos vacios
+     */
     private void validarTablaPuja() throws EmptyFieldsException {
         if(TablaPujas.getSelectionModel().getSelectedItem() == null){
             throw new EmptyFieldsException("No hay puja seleccionada");
         }
     }
-
+    /**
+     * Metodo para cargar la tabla
+     * */
     private void loadTable(){
         ColumnNombre.setCellValueFactory(new PropertyValueFactory<>("Nombre"));
         ColumnTipo.setCellValueFactory(new PropertyValueFactory<>("TipoProducto"));

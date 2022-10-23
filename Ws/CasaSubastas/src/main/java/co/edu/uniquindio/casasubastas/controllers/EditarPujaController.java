@@ -24,13 +24,20 @@ public class EditarPujaController {
 
     @FXML
     private URL location;
-
+    /**
+     * Boton para editar una puja
+     */
     @FXML
     private Button BotonEditar;
-
+    /**
+     * TextField para la puja
+     */
     @FXML
     private TextField TextPuja;
-
+    /**
+     * Metodo para editar la puja al presionar el boton correspondiente
+     * @param event Evento de presionar el boton
+     */
     @FXML
     void ActionEditar(ActionEvent event) {
         try {

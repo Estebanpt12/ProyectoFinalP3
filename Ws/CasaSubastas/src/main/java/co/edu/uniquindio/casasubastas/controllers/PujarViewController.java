@@ -23,12 +23,22 @@ public class PujarViewController {
     @FXML
     private URL location;
 
+    /**
+     * Boton para pujar
+     */
+
     @FXML
     private Button BotonPuja;
+    /**
+     *TextField de la puja
+     */
 
     @FXML
     private TextField TextPuja;
-
+    /**
+     * Metodo para realizar una puja al pulsar el boton correspondiente
+     * @param event Evento de pulsar el boton
+     * */
     @FXML
     void ActionPuja(ActionEvent event) {
         try {

@@ -37,6 +37,9 @@ public class Usuario implements Serializable {
      */
     ArrayList<String> listaProductos = new ArrayList<>();
 
+    /**
+     *Lista donde se guardan los mensajes
+     */
     ArrayList<Mensaje> listaMensajes = new ArrayList<>();
 
     /**
@@ -123,11 +126,17 @@ public class Usuario implements Serializable {
     public void setIUsuario(IUsuario iUsuario) {
         this.iUsuario = iUsuario;
     }
-
+    /**
+     * Metodo para asignar la interfaz del usuario
+     * @param anunciante Interfaz para asignar el tipo de usuario
+     */
     public void setIUsuario(Anunciante anunciante) {
         this.iUsuario = anunciante;
     }
-
+    /**
+     * Metodo para asignar la interfaz del usuario
+     * @param comprador Interfaz para asignar el tipo de usuario
+     */
     public void setIUsuario(Comprador comprador) {
         this.iUsuario = comprador;
     }

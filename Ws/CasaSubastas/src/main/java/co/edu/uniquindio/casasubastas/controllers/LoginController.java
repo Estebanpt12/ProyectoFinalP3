@@ -40,7 +40,9 @@ public class LoginController {
     @FXML
     private Button loginBtn;
 
-
+    /**
+     * Boton para crear usuario
+     */
     @FXML
     private Button crearUsuarioBtn;
 
@@ -97,7 +99,10 @@ public class LoginController {
             modelFactoryController.crearRegistroLog("Error en los archivos del sistema" ,3, "inicioSesion");
         }
     }
-
+    /**
+     * Metodo para crear un usuario
+     * @param event Evento de pulsar el boton
+     */
     @FXML
     void actionCrear(ActionEvent event) {
         try {
