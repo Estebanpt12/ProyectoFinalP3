@@ -9,9 +9,20 @@ import java.time.LocalDateTime;
 public class Mensaje implements Serializable {
 
     /**
-     * String con el usuario
+     * String con el usuario que tiene el mensaje
      */
     private String usuario;
+
+    /**
+     * String con el usuario remitente
+     */
+    private String usuarioRemitente;
+
+    /**
+     * String con el usuario destinatario
+     */
+    private String usuarioDestinatario;
+    
     /**
      * String con el mensaje
      */
@@ -28,6 +39,14 @@ public class Mensaje implements Serializable {
      * Constructor vacío de la clase
      */
     public Mensaje(){}
+
+    public Mensaje(String usuario, String usuarioRemitente, String usuarioDestinatario, String message, LocalDateTime fecha) {
+        this.usuario = usuario;
+        this.usuarioRemitente = usuarioRemitente;
+        this.usuarioDestinatario = usuarioDestinatario;
+        this.message = message;
+        this.fecha = fecha;
+    }
 
     /**
      * Método para tomar el usuario
@@ -71,10 +90,28 @@ public class Mensaje implements Serializable {
     public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
+
+    public String getUsuarioRemitente() {
+        return usuarioRemitente;
+    }
+
+    public void setUsuarioRemitente(String usuarioRemitente) {
+        this.usuarioRemitente = usuarioRemitente;
+    }
+
+    public String getUsuarioDestinatario() {
+        return usuarioDestinatario;
+    }
+
+    public void setUsuarioDestinatario(String usuarioDestinatario) {
+        this.usuarioDestinatario = usuarioDestinatario;
+    }
+
     /**
      * Método para tomar el valor de esRecibido
      * @return esRecibido valor booleano
      */
+
     public boolean isEsRecibido() {
         return esRecibido;
     }
@@ -85,4 +122,6 @@ public class Mensaje implements Serializable {
     public void setEsRecibido(boolean esRecibido) {
         this.esRecibido = esRecibido;
     }
+
+
 }

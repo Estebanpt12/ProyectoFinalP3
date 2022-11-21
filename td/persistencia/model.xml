@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="11.0.14.1" class="java.beans.XMLDecoder">
+ <object class="co.edu.uniquindio.casasubastas.model.SubastasQuindio" id="SubastasQuindio0">
+  <void property="productos">
+   <void method="add">
+    <object class="co.edu.uniquindio.casasubastas.model.Producto" id="Producto0">
+     <void property="descripcion">
+      <string>prueba</string>
+     </void>
+     <void property="fechaFin">
+      <object class="java.time.LocalDateTime" method="parse">
+       <string>2023-10-10T21:02:56.863077100</string>
+      </object>
+     </void>
+     <void property="fechaInicio">
+      <object class="java.time.LocalDateTime" id="LocalDateTime0" method="parse">
+       <string>2022-10-10T21:02:56.863077100</string>
+      </object>
+     </void>
+     <void property="listaPuja">
+      <void method="add">
+       <object class="co.edu.uniquindio.casasubastas.model.Puja">
+        <void property="fecha">
+         <object idref="LocalDateTime0"/>
+        </void>
+        <void property="usuario">
+         <string>penaeste1</string>
+        </void>
+        <void property="valor">
+         <double>50000.0</double>
+        </void>
+       </object>
+      </void>
+      <void method="add">
+       <object class="co.edu.uniquindio.casasubastas.model.Puja">
+        <void property="fecha">
+         <object idref="LocalDateTime0"/>
+        </void>
+        <void property="usuario">
+         <string>penaeste1</string>
+        </void>
+        <void property="valor">
+         <double>250000.0</double>
+        </void>
+       </object>
+      </void>
+     </void>
+     <void property="nombre">
+      <string>Micro</string>
+     </void>
+     <void property="tipoProducto">
+      <string>Electro</string>
+     </void>
+     <void property="valorInicial">
+      <double>10000.0</double>
+     </void>
+    </object>
+   </void>
+   <void method="add">
+    <object class="co.edu.uniquindio.casasubastas.model.Producto" id="Producto1">
+     <void property="descripcion">
+      <string>prueba</string>
+     </void>
+     <void property="fechaFin">
+      <object class="java.time.LocalDateTime" method="parse">
+       <string>2023-04-10T21:02:56.863077100</string>
+      </object>
+     </void>
+     <void property="fechaInicio">
+      <object idref="LocalDateTime0"/>
+     </void>
+     <void property="listaPuja">
+      <void method="add">
+       <object class="co.edu.uniquindio.casasubastas.model.Puja">
+        <void property="fecha">
+         <object idref="LocalDateTime0"/>
+        </void>
+        <void property="usuario">
+         <string>penaeste5</string>
+        </void>
+        <void property="valor">
+         <double>50000.0</double>
+        </void>
+       </object>
+      </void>
+     </void>
+     <void property="nombre">
+      <string>Jpa</string>
+     </void>
+     <void property="tipoProducto">
+      <string>Pro</string>
+     </void>
+     <void property="valorInicial">
+      <double>20000.0</double>
+     </void>
+    </object>
+   </void>
+  </void>
+  <void property="usuarios">
+   <void method="add">
+    <object class="co.edu.uniquindio.casasubastas.model.Usuario" id="Usuario0">
+     <void property="contrasenia">
+      <string>1234</string>
+     </void>
+     <void property="edad">
+      <int>19</int>
+     </void>
+     <void property="iUsuario">
+      <object class="co.edu.uniquindio.casasubastas.model.Anunciante"/>
+     </void>
+     <void property="listaProductos">
+      <void method="add">
+       <string>Micro</string>
+      </void>
+     </void>
+     <void property="nombre">
+      <string>Esteban</string>
+     </void>
+     <void property="usuario">
+      <string>penaeste</string>
+     </void>
+    </object>
+   </void>
+   <void method="add">
+    <object class="co.edu.uniquindio.casasubastas.model.Usuario">
+     <void property="contrasenia">
+      <string>1233</string>
+     </void>
+     <void property="edad">
+      <int>20</int>
+     </void>
+     <void property="iUsuario">
+      <object class="co.edu.uniquindio.casasubastas.model.Anunciante"/>
+     </void>
+     <void property="nombre">
+      <string>wsad</string>
+     </void>
+     <void property="usuario">
+      <string>penaeste2</string>
+     </void>
+    </object>
+   </void>
+   <void method="add">
+    <object class="co.edu.uniquindio.casasubastas.model.Usuario" id="Usuario1">
+     <void property="contrasenia">
+      <string>1232</string>
+     </void>
+     <void property="edad">
+      <int>18</int>
+     </void>
+     <void property="iUsuario">
+      <object class="co.edu.uniquindio.casasubastas.model.Anunciante"/>
+     </void>
+     <void property="listaProductos">
+      <void method="add">
+       <string>Jpa</string>
+      </void>
+     </void>
+     <void property="nombre">
+      <string>per</string>
+     </void>
+     <void property="usuario">
+      <string>penaeste3</string>
+     </void>
+    </object>
+   </void>
+   <void method="add">
+    <object class="co.edu.uniquindio.casasubastas.model.Usuario" id="Usuario2">
+     <void property="contrasenia">
+      <string>1234</string>
+     </void>
+     <void property="edad">
+      <int>19</int>
+     </void>
+     <void property="iUsuario">
+      <object class="co.edu.uniquindio.casasubastas.model.Comprador"/>
+     </void>
+     <void property="listaProductos">
+      <void method="add">
+       <string>Micro</string>
+      </void>
+      <void method="add">
+       <string>Micro</string>
+      </void>
+     </void>
+     <void property="nombre">
+      <string>Esteban1</string>
+     </void>
+     <void property="usuario">
+      <string>penaeste1</string>
+     </void>
+    </object>
+   </void>
+   <void method="add">
+    <object class="co.edu.uniquindio.casasubastas.model.Usuario">
+     <void property="contrasenia">
+      <string>45</string>
+     </void>
+     <void property="edad">
+      <int>41</int>
+     </void>
+     <void property="iUsuario">
+      <object class="co.edu.uniquindio.casasubastas.model.Comprador"/>
+     </void>
+     <void property="nombre">
+      <string>Esteban12</string>
+     </void>
+     <void property="usuario">
+      <string>penaeste4</string>
+     </void>
+    </object>
+   </void>
+   <void method="add">
+    <object class="co.edu.uniquindio.casasubastas.model.Usuario" id="Usuario3">
+     <void property="contrasenia">
+      <string>675</string>
+     </void>
+     <void property="edad">
+      <int>39</int>
+     </void>
+     <void property="iUsuario">
+      <object class="co.edu.uniquindio.casasubastas.model.Comprador"/>
+     </void>
+     <void property="listaProductos">
+      <void method="add">
+       <string>Jpa</string>
+      </void>
+     </void>
+     <void property="nombre">
+      <string>Esteban13</string>
+     </void>
+     <void property="usuario">
+      <string>penaeste5</string>
+     </void>
+    </object>
+   </void>
+  </void>
+ </object>
+</java>

@@ -159,6 +159,12 @@ public class Persistencia {
     public static final String RUTA_ARCHIVO_MENSAJES = "C:\\td\\persistencia\\archivos\\Mensajes.txt";
 
     /**
+     * Ruta del archivo donde se guardan los chats
+     */
+    public static final String RUTA_ARCHIVO_CHATS = "C:\\td\\persistencia\\archivos\\Chats.txt";
+
+
+    /**
      * Método para guardar una lista de usuarios sin importar si es comprador o anunciante
      * @param listaUsuarios Lista de usuarios a guardar
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
@@ -168,6 +174,7 @@ public class Persistencia {
         String contenidoAnunciantes = "";
         String contenidoPujas = "";
         String contenidoProductos = "";
+        String contenidoChats = "";
         String contenidoMensajes = "";
         for(Usuario usuario : listaUsuarios){
             if(usuario.getiUsuario() instanceof Anunciante){
@@ -188,15 +195,23 @@ public class Persistencia {
                 contenidoCompradores += usuario.getUsuario()+"@@"+usuario.getNombre()+"@@"
                         +usuario.getContrasenia()+"@@"+usuario.getEdad()+"\n";
             }
-            for(Mensaje mensaje: usuario.getListaMensajes()){
-                contenidoMensajes += mensaje.isEsRecibido()+"@@"+mensaje.getUsuario()+"@@"+mensaje.getMessage()+"@@"+
-                        mensaje.getFecha()+"@@"+usuario.getUsuario()+"\n";
+            if(usuario.getListaChats() != null){
+                for(Chat chat : usuario.getListaChats()){
+                    contenidoChats += chat.getUsuario()+"@@"+chat.getUsuarioRemitente()+"@@"+chat.getUsuarioDestinatario()+"\n";
+                    if(chat.getListaMensajes() != null){
+                        for(Mensaje mensaje : chat.getListaMensajes()){
+                            contenidoMensajes += mensaje.getUsuario()+"@@"+mensaje.getUsuarioRemitente()+"@@"+mensaje.getUsuarioDestinatario()+"@@"+mensaje.getMessage()+"@@"+mensaje.getFecha()+"\n";
+                        }
+                    }
+                    
+                }
             }
         }
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_ANUNCIANTES, contenidoAnunciantes, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_COMPRADORES, contenidoCompradores, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES, contenidoProductos, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES, contenidoPujas, false);
+        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_CHATS, contenidoChats, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_MENSAJES, contenidoMensajes, false);
     }
 
@@ -211,6 +226,7 @@ public class Persistencia {
         String contenidoAnunciantes = "";
         String contenidoPujas = "";
         String contenidoProductos = "";
+        String contenidoChats = "";
         String contenidoMensajes = "";
         for(Usuario usuario : listaUsuarios){
             if(usuario.getiUsuario() instanceof Anunciante){
@@ -231,12 +247,19 @@ public class Persistencia {
                 contenidoCompradores += usuario.getUsuario()+"@@"+usuario.getNombre()+"@@"
                         +usuario.getContrasenia()+"@@"+usuario.getEdad()+"\n";
             }
-            for(Mensaje mensaje: usuario.getListaMensajes()){
-                contenidoMensajes += mensaje.isEsRecibido()+"@@"+mensaje.getUsuario()+"@@"+mensaje.getMessage()+"@@"+
-                        mensaje.getFecha()+"@@"+usuario.getUsuario();
+            if(usuario.getListaChats() != null){
+                for(Chat chat : usuario.getListaChats()){
+                    contenidoChats += chat.getUsuario()+"@@"+chat.getUsuarioRemitente()+"@@"+chat.getUsuarioDestinatario()+"\n";
+                    if(chat.getListaMensajes() != null){
+                        for(Mensaje mensaje : chat.getListaMensajes()){
+                            contenidoMensajes += mensaje.getUsuario()+"@@"+mensaje.getUsuarioRemitente()+"@@"+mensaje.getUsuarioDestinatario()+"@@"+mensaje.getMessage()+"@@"+mensaje.getFecha();
+                        }
+                    }
+                    
+                }
             }
         }
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Anunciantes")+".txt",
+       ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Anunciantes")+".txt",
                 contenidoAnunciantes, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Compradores")+".txt",
                 contenidoCompradores, false);
@@ -244,6 +267,7 @@ public class Persistencia {
                 contenidoProductos, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("PujasCompradores")+".txt",
                 contenidoPujas, false);
+        ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Chats")+".txt",contenidoChats, false);
         ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Mensajes")+".txt",
                 contenidoMensajes, false);
     }
@@ -366,6 +390,7 @@ public class Persistencia {
         ArrayList<String> listaCompradores = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_COMPRADORES);
         ArrayList<String> listaProductos = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES);
         ArrayList<String> listaPujas = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES);
+        ArrayList<String> listaChats = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_CHATS);
         ArrayList<String> listaMensajes = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_MENSAJES);
 
         for(String anuncianteCargado : listaAnunciantes){
@@ -416,22 +441,41 @@ public class Persistencia {
             listaUsuario.add(usuario);
         }
 
+        for(String chatCargado : listaChats){
+            Chat chat = new Chat();
+            Scanner scanner = new Scanner(chatCargado);
+            scanner.useDelimiter("@@");
+            while (scanner.hasNext()){
+                chat.setUsuario(scanner.next());
+                chat.setUsuarioRemitente(scanner.next());
+                chat.setUsuarioDestinatario(scanner.next());
+            }
+            for(Usuario usuario : listaUsuario){
+                if(usuario.getUsuario().equals(chat.getUsuario())){
+                    usuario.getListaChats().add(chat);
+                    break;
+                }
+            }
+        }
+
         for(String mensajeCargado : listaMensajes){
             Mensaje mensaje = new Mensaje();
-            String usuarioAux = "";
             Scanner scanner = new Scanner(mensajeCargado);
             scanner.useDelimiter("@@");
             while (scanner.hasNext()){
-                mensaje.setEsRecibido(Boolean.parseBoolean(scanner.next()));
                 mensaje.setUsuario(scanner.next());
+                mensaje.setUsuarioRemitente(scanner.next());
+                mensaje.setUsuarioDestinatario(scanner.next());
+                mensaje.setMessage(scanner.next());
                 LocalDateTime localDateTime = LocalDateTime.parse(scanner.next());
                 mensaje.setFecha(localDateTime);
-                usuarioAux = scanner.next();
             }
             for(Usuario usuario : listaUsuario){
-                if(usuario.getUsuario().equals(usuarioAux)){
-                    usuario.getListaMensajes().add(mensaje);
-                    break;
+                for(Chat chat : usuario.getListaChats()){
+                    if(chat.getUsuario().equals(mensaje.getUsuario())){
+                        chat.getListaMensajes().add(mensaje);
+                        break;
+                    }
                 }
             }
         }

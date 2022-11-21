@@ -357,43 +357,85 @@ public class SubastasQuindio implements Serializable {
         }
         return puja1;
     }
-    /**
-     * Método para crear un mensaje Enviado
-     * @param mensaje Mensaje a ser enviado
-     * @param codigoDestinatario Codigo del destinatario del mensaje
-     * @param codigoRemitente Codigo del remitente del mensaje
-     */
-    public void crearMensajeEnviado(String codigoRemitente, String codigoDestinatario, String mensaje){
+    // /**
+    //  * Método para crear un mensaje Enviado
+    //  * @param mensaje Mensaje a ser enviado
+    //  * @param codigoDestinatario Codigo del destinatario del mensaje
+    //  * @param codigoRemitente Codigo del remitente del mensaje
+    //  */
+    // public void crearMensajeEnviado(String codigoRemitente, String codigoDestinatario, String mensaje){
+    //     Mensaje mensaje1 = new Mensaje();
+    //     mensaje1.setUsuario(codigoDestinatario);
+    //     mensaje1.setMessage(mensaje);
+    //     mensaje1.setEsRecibido(false);
+    //     mensaje1.setFecha(LocalDateTime.now());
+    //     for(Usuario usuario : usuarios){
+    //         if(usuario.getUsuario().equals(codigoRemitente)){
+    //             usuario.getListaChats().getListaMensajes().add(mensaje1);
+    //             break;
+    //         }
+    //     }
+    // }
+    // /**
+    //  * Método para crear un mensaje recibido
+    //  * @param codigoRemitente Codigo del remitente del mensaje
+    //  * @param codigoDestinatario Codigo del destinatario del mensaje
+    //  * @param mensaje Mensaje recibido
+    //  */
+    // public void crearMensajeRecibido(String codigoRemitente, String codigoDestinatario, String mensaje){
+    //     Mensaje mensaje1 = new Mensaje();
+    //     mensaje1.setUsuario(codigoRemitente);
+    //     mensaje1.setMessage(mensaje);
+    //     mensaje1.setEsRecibido(true);
+    //     mensaje1.setFecha(LocalDateTime.now());
+    //     for(Usuario usuario : usuarios){
+    //         if(usuario.getUsuario().equals(codigoDestinatario)){
+    //             usuario.getListaMensajes().add(mensaje1);
+    //             break;
+    //         }
+    //     }
+    // }
+
+    public void crearMensaje(String usuario, String usuarioRemitente, String usuarioDestinatario, String mensaje){
         Mensaje mensaje1 = new Mensaje();
-        mensaje1.setUsuario(codigoDestinatario);
+        mensaje1.setUsuario(usuario);
+        mensaje1.setUsuarioRemitente(usuarioRemitente);
+        mensaje1.setUsuarioDestinatario(usuarioDestinatario);
         mensaje1.setMessage(mensaje);
-        mensaje1.setEsRecibido(false);
         mensaje1.setFecha(LocalDateTime.now());
-        for(Usuario usuario : usuarios){
-            if(usuario.getUsuario().equals(codigoRemitente)){
-                usuario.getListaMensajes().add(mensaje1);
+        for(Usuario usuario1 : usuarios){
+            if (usuario1.getUsuario().equals(mensaje1.getUsuario())){
+                for(Chat chat : usuario1.getListaChats()){
+                    if (chat.getUsuarioDestinatario().equals(mensaje1.getUsuarioDestinatario()) || chat.getUsuarioDestinatario().equals(mensaje1.getUsuarioRemitente())){} {
+                        chat.getListaMensajes().add(mensaje1);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void crearChat(String usuario, String usuarioRemitente, String usuarioDestinatario) {
+        Chat chat = new Chat();
+        chat.setUsuario(usuario);
+        chat.setUsuarioRemitente(usuarioRemitente);
+        chat.setUsuarioDestinatario(usuarioDestinatario);
+        for(Usuario usuario1 : usuarios){
+            if(usuario1.getUsuario().equals(chat.getUsuario())){
+                usuario1.getListaChats().add(chat);
                 break;
             }
         }
     }
-    /**
-     * Método para crear un mensaje recibido
-     * @param codigoRemitente Codigo del remitente del mensaje
-     * @param codigoDestinatario Codigo del destinatario del mensaje
-     * @param mensaje Mensaje recibido
-     */
-    public void crearMensajeRecibido(String codigoRemitente, String codigoDestinatario, String mensaje){
-        Mensaje mensaje1 = new Mensaje();
-        mensaje1.setUsuario(codigoRemitente);
-        mensaje1.setMessage(mensaje);
-        mensaje1.setEsRecibido(true);
-        mensaje1.setFecha(LocalDateTime.now());
-        for(Usuario usuario : usuarios){
-            if(usuario.getUsuario().equals(codigoDestinatario)){
-                usuario.getListaMensajes().add(mensaje1);
-                break;
+
+    public ArrayList<Chat> obtenerChats(String usuario){
+        ArrayList<Chat> listaChats = new ArrayList<>();
+        for (Usuario usuario1 : usuarios) {
+            if (usuario1.getUsuario().equals(usuario)){
+                listaChats = usuario1.getListaChats();
             }
         }
+        return listaChats;
     }
 
     /**

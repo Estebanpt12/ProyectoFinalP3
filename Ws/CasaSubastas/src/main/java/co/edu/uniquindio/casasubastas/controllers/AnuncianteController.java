@@ -2,6 +2,7 @@ package co.edu.uniquindio.casasubastas.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import co.edu.uniquindio.casasubastas.exceptions.EmptyFieldsException;
 import co.edu.uniquindio.casasubastas.exceptions.ProductNotFoundException;
 import co.edu.uniquindio.casasubastas.model.Producto;
 import co.edu.uniquindio.casasubastas.model.Puja;
+import co.edu.uniquindio.casasubastas.model.Usuario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,6 +23,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -130,6 +134,12 @@ public class AnuncianteController {
      * Label correspondiente al titulo
      */
 
+    @FXML
+    private Tab Chats;
+
+    @FXML
+    private TabPane AnuncianteView;
+    
     @FXML
     private Label titleLabel1;
     /**
@@ -261,6 +271,7 @@ public class AnuncianteController {
         try {
             validarTablaPuja();
             modelFactoryController.vender(nombreProductoBuscado, TablaPujas.getSelectionModel().getSelectedItem());
+            modelFactoryController.crearChat(TablaPujas.getSelectionModel().getSelectedItem().getUsuario());
             JOptionPane.showMessageDialog(null, "El producto ha sido vendido");
         } catch (EmptyFieldsException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());

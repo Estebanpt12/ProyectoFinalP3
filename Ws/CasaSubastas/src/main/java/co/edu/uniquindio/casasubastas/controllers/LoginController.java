@@ -75,7 +75,7 @@ public class LoginController {
             if(modelFactoryController.getUsuarioLogeado().getiUsuario() instanceof Comprador){
                 URL url = new File("src/main/java/co/edu/uniquindio/casasubastas/views/comprador_view.fxml").toURI().toURL();
                 Parent root1 = FXMLLoader.load(url);
-                Scene scene1 = new Scene(root1, 786, 400);
+                Scene scene1 = new Scene(root1, 804, 570);
                 Stage stage1 = new Stage();
                 stage1.setTitle(usernameTextField.getText());
                 stage1.setScene(scene1);

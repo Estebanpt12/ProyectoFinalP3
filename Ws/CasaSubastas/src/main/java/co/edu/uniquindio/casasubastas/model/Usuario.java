@@ -35,12 +35,12 @@ public class Usuario implements Serializable {
     /**
      * Lista donde se guardan los nombre de los productos
      */
-    ArrayList<String> listaProductos = new ArrayList<>();
+    private ArrayList<String> listaProductos = new ArrayList<>();
 
     /**
-     *Lista donde se guardan los mensajes
+     *Lista donde se guardan los chats
      */
-    ArrayList<Mensaje> listaMensajes = new ArrayList<>();
+    private ArrayList<Chat> listaChats = new ArrayList<>();
 
     /**
      * Constructor vacio de la clase
@@ -196,17 +196,17 @@ public class Usuario implements Serializable {
     }
 
     /**
-     * Metodo para obtener la lista de mensajes
-     * @return listaMensajes lista de mensajes
+     * Metodo para obtener la lista de chats
+     * @return listaMensajes lista de chats
      */
-    public ArrayList<Mensaje> getListaMensajes() {
-        return listaMensajes;
+    public ArrayList<Chat> getListaChats() {
+        return listaChats;
     }
     /**
-     * Metodo para asignar la lista de mensajes
-     * @param listaMensajes lista de mensajes
+     * Metodo para asignar la lista de chats
+     * @param listaChats lista de chats
      */
-    public void setListaMensajes(ArrayList<Mensaje> listaMensajes) {
-        this.listaMensajes = listaMensajes;
+    public void setListaChats(ArrayList<Chat> listaChats) {
+        this.listaChats = listaChats;
     }
 }

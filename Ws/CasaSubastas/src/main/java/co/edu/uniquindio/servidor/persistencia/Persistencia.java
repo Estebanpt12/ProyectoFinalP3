@@ -1,4 +1,4 @@
-package co.edu.uniquindio.casasubastas.persistencia;
+package co.edu.uniquindio.servidor.persistencia;
 
 import co.edu.uniquindio.casasubastas.exceptions.*;
 import co.edu.uniquindio.casasubastas.model.*;
@@ -86,6 +86,9 @@ public class Persistencia {
     /**
      * Ruta del archivo de los usuarios compradores
      */
+    /**
+     * Ruta del archivo de los usuarios compradores
+     */
     public static final String RUTA_ARCHIVO_COMPRADORES = "C:\\td\\persistencia\\archivos\\Compradores.txt";
 
     /**
@@ -159,15 +162,21 @@ public class Persistencia {
     public static final String RUTA_ARCHIVO_MENSAJES = "C:\\td\\persistencia\\archivos\\Mensajes.txt";
 
     /**
+     * Ruta del archivo donde se guardan los chats
+     */
+    public static final String RUTA_ARCHIVO_CHATS = "C:\\td\\persistencia\\archivos\\Chats.txt";
+
+    /**
      * Método para guardar una lista de usuarios sin importar si es comprador o anunciante
      * @param listaUsuarios Lista de usuarios a guardar
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public static void guardarUsuarios(ArrayList<Usuario> listaUsuarios) throws IOException {
+    public static void guardarUsuarios(ArrayList<Usuario> listaUsuarios) throws IOException, InterruptedException {
         String contenidoCompradores = "";
         String contenidoAnunciantes = "";
         String contenidoPujas = "";
         String contenidoProductos = "";
+        String contenidoChats = "";
         String contenidoMensajes = "";
         for(Usuario usuario : listaUsuarios){
             if(usuario.getiUsuario() instanceof Anunciante){
@@ -188,31 +197,63 @@ public class Persistencia {
                 contenidoCompradores += usuario.getUsuario()+"@@"+usuario.getNombre()+"@@"
                         +usuario.getContrasenia()+"@@"+usuario.getEdad()+"\n";
             }
-            for(Mensaje mensaje: usuario.getListaMensajes()){
-                contenidoMensajes += mensaje.isEsRecibido()+"@@"+mensaje.getUsuario()+"@@"+mensaje.getMessage()+"@@"+
-                        mensaje.getFecha()+"@@"+usuario.getUsuario()+"\n";
+            if(usuario.getListaChats() != null){
+                for(Chat chat : usuario.getListaChats()){
+                    contenidoChats += chat.getUsuario()+"@@"+chat.getUsuarioRemitente()+"@@"+chat.getUsuarioDestinatario()+"\n";
+                    if(chat.getListaMensajes() != null){
+                        for(Mensaje mensaje : chat.getListaMensajes()){
+                            contenidoMensajes += mensaje.getUsuario()+"@@"+mensaje.getUsuarioRemitente()+"@@"+mensaje.getUsuarioDestinatario()+"@@"+mensaje.getMessage()+"@@"+mensaje.getFecha()+"\n";
+                        }
+                    }
+                    
+                }
             }
         }
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_ANUNCIANTES, contenidoAnunciantes, false);
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_COMPRADORES, contenidoCompradores, false);
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES, contenidoProductos, false);
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES, contenidoPujas, false);
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_MENSAJES, contenidoMensajes, false);
+
+        GuardarArchivo hiloGuardarArchivo1 = new GuardarArchivo(RUTA_ARCHIVO_ANUNCIANTES, contenidoAnunciantes, false);
+        GuardarArchivo hiloGuardarArchivo2 = new GuardarArchivo(RUTA_ARCHIVO_COMPRADORES, contenidoCompradores, false);
+        GuardarArchivo hiloGuardarArchivo3 = new GuardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES, contenidoProductos, false);
+        GuardarArchivo hiloGuardarArchivo4 = new GuardarArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES, contenidoPujas, false);
+        GuardarArchivo hiloGuardarArchivo5 = new GuardarArchivo(RUTA_ARCHIVO_MENSAJES, contenidoMensajes, false);
+        GuardarArchivo hiloGuardarArchivo6 = new GuardarArchivo(RUTA_ARCHIVO_CHATS, contenidoChats, false);
+
+        hiloGuardarArchivo1.start();
+        hiloGuardarArchivo1.join();
+        hiloGuardarArchivo2.start();
+        hiloGuardarArchivo2.join();
+        hiloGuardarArchivo3.start();
+        hiloGuardarArchivo3.join();
+        hiloGuardarArchivo4.start();
+        hiloGuardarArchivo4.join();
+        hiloGuardarArchivo5.start();
+        hiloGuardarArchivo5.join();
+        hiloGuardarArchivo6.start();
+        hiloGuardarArchivo6.join();
+
+
+
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_ANUNCIANTES, contenidoAnunciantes, false);
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_COMPRADORES, contenidoCompradores, false);
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES, contenidoProductos, false);
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES, contenidoPujas, false);
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_MENSAJES, contenidoMensajes, false);
+        //ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_CHATS, contenidoChats, false);
     }
 
 
     /**
      * Método para guardar una lista de usuarios en el archivo de respaldo
-     * @param listaUsuarios Lista de usuarios a guardar
+     * @param arrayList Lista de usuarios a guardar
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public static void guardarUsuariosRespaldo(ArrayList<Usuario> listaUsuarios) throws IOException {
+    public static void guardarUsuariosRespaldo(ArrayList<Usuario> arrayList) throws IOException, InterruptedException {
         String contenidoCompradores = "";
         String contenidoAnunciantes = "";
         String contenidoPujas = "";
         String contenidoProductos = "";
+        String contenidoChats = "";
         String contenidoMensajes = "";
-        for(Usuario usuario : listaUsuarios){
+        for(Usuario usuario : arrayList){
             if(usuario.getiUsuario() instanceof Anunciante){
                 if(usuario.getListaProductos() != null){
                     for(String producto : usuario.getListaProductos()){
@@ -231,21 +272,56 @@ public class Persistencia {
                 contenidoCompradores += usuario.getUsuario()+"@@"+usuario.getNombre()+"@@"
                         +usuario.getContrasenia()+"@@"+usuario.getEdad()+"\n";
             }
-            for(Mensaje mensaje: usuario.getListaMensajes()){
-                contenidoMensajes += mensaje.isEsRecibido()+"@@"+mensaje.getUsuario()+"@@"+mensaje.getMessage()+"@@"+
-                        mensaje.getFecha()+"@@"+usuario.getUsuario();
+            if(usuario.getListaChats() != null){
+                for(Chat chat : usuario.getListaChats()){
+                    contenidoChats += chat.getUsuario()+"@@"+chat.getUsuarioRemitente()+"@@"+chat.getUsuarioDestinatario()+"\n";
+                    if(chat.getListaMensajes() != null){
+                        for(Mensaje mensaje : chat.getListaMensajes()){
+                            contenidoMensajes += mensaje.getUsuario()+"@@"+mensaje.getUsuarioRemitente()+"@@"+mensaje.getUsuarioDestinatario()+"@@"+mensaje.getMessage()+"@@"+mensaje.getFecha();
+                        }
+                    }
+                    
+                }
             }
         }
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Anunciantes")+".txt",
-                contenidoAnunciantes, false);
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Compradores")+".txt",
-                contenidoCompradores, false);
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("ProductosAnunciantes")+".txt",
-                contenidoProductos, false);
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("PujasCompradores")+".txt",
-                contenidoPujas, false);
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Mensajes")+".txt",
-                contenidoMensajes, false);
+
+        GuardarArchivo hiloGuardarArchivo1 = new GuardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Anunciantes")+".txt",
+        contenidoAnunciantes, false);
+        GuardarArchivo hiloGuardarArchivo2 = new GuardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Compradores")+".txt",
+        contenidoCompradores, false);
+        GuardarArchivo hiloGuardarArchivo3 = new GuardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("ProductosAnunciantes")+".txt",
+        contenidoProductos, false);
+        GuardarArchivo hiloGuardarArchivo4 = new GuardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("PujasCompradores")+".txt",
+        contenidoPujas, false);
+        GuardarArchivo hiloGuardarArchivo5 = new GuardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Mensajes")+".txt",
+        contenidoMensajes, false);
+        GuardarArchivo hiloGuardarArchivo6 = new GuardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Chats")+".txt",contenidoChats, false);
+
+        hiloGuardarArchivo1.start();
+        hiloGuardarArchivo1.join();
+        hiloGuardarArchivo2.start();
+        hiloGuardarArchivo2.join();
+        hiloGuardarArchivo3.start();
+        hiloGuardarArchivo3.join();
+        hiloGuardarArchivo4.start();
+        hiloGuardarArchivo4.join();
+        hiloGuardarArchivo5.start();
+        hiloGuardarArchivo5.join();
+        hiloGuardarArchivo6.start();
+        hiloGuardarArchivo6.join();
+
+
+        //ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Chats")+".txt",contenidoChats, false);
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Anunciantes")+".txt",
+        //         contenidoAnunciantes, false);
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Compradores")+".txt",
+        //         contenidoCompradores, false);
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("ProductosAnunciantes")+".txt",
+        //         contenidoProductos, false);
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("PujasCompradores")+".txt",
+        //         contenidoPujas, false);
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Mensajes")+".txt",
+        //         contenidoMensajes, false);
     }
 
     /**
@@ -253,7 +329,7 @@ public class Persistencia {
      * @param listaProductos Lista de productos a guardar
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public static void guardarProductos(ArrayList<Producto> listaProductos) throws IOException{
+    public static void guardarProductos(ArrayList<Producto> listaProductos) throws IOException, InterruptedException {
         String contenidoProductos = "";
         String contenidoPujas = "";
         for(Producto producto : listaProductos){
@@ -267,8 +343,17 @@ public class Persistencia {
                     producto.getValorInicial()+"@@"+producto.getDescripcion()+"@@"+producto.getFechaInicio()+"@@"+
                     producto.getFechaFin()+"@@"+producto.isVendido()+"@@"+producto.getRutaFoto()+"\n";
         }
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS, contenidoProductos, false);
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS, contenidoPujas, false);
+
+        GuardarArchivo hiloGuardarArchivo1 = new GuardarArchivo(RUTA_ARCHIVO_PRODUCTOS, contenidoProductos, false);
+        GuardarArchivo hiloGuardarArchivo2 = new GuardarArchivo(RUTA_ARCHIVO_PUJAS, contenidoPujas, false);
+
+        hiloGuardarArchivo1.start();
+        hiloGuardarArchivo1.join();
+        hiloGuardarArchivo2.start();
+        hiloGuardarArchivo2.join();
+
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS, contenidoProductos, false);
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS, contenidoPujas, false);
 
     }
 
@@ -277,7 +362,7 @@ public class Persistencia {
      * @param producto Lista de productos a guardar
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public static void guardarProductoEliminado(Producto producto) throws IOException{
+    public static void guardarProductoEliminado(Producto producto) throws IOException, InterruptedException {
         String contenidoProductos = "";
         String contenidoPujas = "";
         for(Puja puja : producto.getListaPuja()){
@@ -288,8 +373,17 @@ public class Persistencia {
                 producto.getValorInicial()+"@@"+producto.getDescripcion()+"@@"+producto.getFechaInicio()+"@@"+
                 producto.getFechaFin()+"@@"+producto.isVendido()+"@@"+producto.getRutaFoto()+"@@"+
                 LocalDateTime.now()+"\n";
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ELIMINADOS, contenidoProductos, true);
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_ELIMINADOS, contenidoPujas, true);
+
+        GuardarArchivo hiloGuardarArchivo1 = new GuardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ELIMINADOS, contenidoProductos, true);
+        GuardarArchivo hiloGuardarArchivo2 = new GuardarArchivo(RUTA_ARCHIVO_PUJAS_ELIMINADOS, contenidoPujas, true);
+
+        hiloGuardarArchivo1.start();
+        hiloGuardarArchivo1.join();
+        hiloGuardarArchivo2.start();
+        hiloGuardarArchivo2.join();
+
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ELIMINADOS, contenidoProductos, true);
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_ELIMINADOS, contenidoPujas, true);
 
     }
 
@@ -299,10 +393,16 @@ public class Persistencia {
      * @param nombreProducto Nombre del producto
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public static void guardarProductoAnuncianteEliminado(String codigoAnunciante, String nombreProducto) throws IOException {
+    public static void guardarProductoAnuncianteEliminado(String codigoAnunciante, String nombreProducto) throws IOException, InterruptedException {
         String contenidoProductos = "";
         contenidoProductos += codigoAnunciante+"@@"+nombreProducto+"@@"+LocalDateTime.now()+"\n";
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES_ELIMINADOS, contenidoProductos, true);
+
+        GuardarArchivo hiloGuardarArchivo1 = new GuardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES_ELIMINADOS, contenidoProductos, true);
+
+        hiloGuardarArchivo1.start();
+        hiloGuardarArchivo1.join();
+
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES_ELIMINADOS, contenidoProductos, true);
     }
 
     /**
@@ -311,10 +411,16 @@ public class Persistencia {
      * @param nombreProducto Nombre del producto
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public static void guardarPujaCompradorEliminado(String codigoAnunciante, String nombreProducto) throws IOException {
+    public static void guardarPujaCompradorEliminado(String codigoAnunciante, String nombreProducto) throws IOException, InterruptedException {
         String contenidoProductos = "";
         contenidoProductos += codigoAnunciante+"@@"+nombreProducto+"@@"+LocalDateTime.now()+"\n";
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES_ELIMINADOS, contenidoProductos, true);
+
+        GuardarArchivo hiloGuardarArchivo1 = new GuardarArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES_ELIMINADOS, contenidoProductos, true);
+
+        hiloGuardarArchivo1.start();
+        hiloGuardarArchivo1.join();
+
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES_ELIMINADOS, contenidoProductos, true);
     }
 
     /**
@@ -323,11 +429,17 @@ public class Persistencia {
      * @param producto Nombre del producto asociado a la puja
      * @throws IOException Se valida si existe un error en la escritura del archivo
      */
-    public static void guardarPujaEliminada(Puja puja, String producto) throws IOException {
+    public static void guardarPujaEliminada(Puja puja, String producto) throws IOException, InterruptedException {
         String contenidoPujas = "";
         contenidoPujas += producto+"@@"+puja.getUsuario()+"@@"+puja.getFecha()+"@@"
                 +puja.getValor()+"@@"+LocalDateTime.now()+"\n";
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_ELIMINADOS, contenidoPujas, true);
+
+        GuardarArchivo hiloGuardarArchivo1 = new GuardarArchivo(RUTA_ARCHIVO_PUJAS_ELIMINADOS, contenidoPujas, true);
+
+        hiloGuardarArchivo1.start();
+        hiloGuardarArchivo1.join();
+
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVO_PUJAS_ELIMINADOS, contenidoPujas, true);
     }
 
     /**
@@ -335,7 +447,7 @@ public class Persistencia {
      * @param listaProductos Lista de productos a guardar
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public static void guardarProductosRespaldo(ArrayList<Producto> listaProductos) throws IOException{
+    public static void guardarProductosRespaldo(ArrayList<Producto> listaProductos) throws IOException, InterruptedException {
         String contenidoProductos = "";
         String contenidoPujas = "";
         for(Producto producto : listaProductos){
@@ -349,10 +461,21 @@ public class Persistencia {
                     producto.getValorInicial()+"@@"+producto.getDescripcion()+"@@"+producto.getFechaInicio()+"@@"+
                     producto.getFechaFin()+"@@"+producto.isVendido()+"@@"+producto.getRutaFoto()+"\n";
         }
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Productos")+".txt",
-                contenidoProductos, false);
-        ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("PujasProductos")+".txt",
-                contenidoPujas, false);
+
+        GuardarArchivo hiloGuardarArchivo1 = new GuardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Productos")+".txt",
+        contenidoProductos, false);
+        GuardarArchivo hiloGuardarArchivo2 = new GuardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("PujasProductos")+".txt",
+        contenidoPujas, false);
+
+        hiloGuardarArchivo1.start();
+        hiloGuardarArchivo1.join();
+        hiloGuardarArchivo2.start();
+        hiloGuardarArchivo2.join();
+
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("Productos")+".txt",
+        //         contenidoProductos, false);
+        // ArchivoUtil.guardarArchivo(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("PujasProductos")+".txt",
+        //         contenidoPujas, false);
     }
 
     /**
@@ -360,13 +483,42 @@ public class Persistencia {
      * @return Lista de usuarios cargados
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public static ArrayList<Usuario> cargarUsuarios() throws IOException {
+    public static ArrayList<Usuario> cargarUsuarios() throws IOException, InterruptedException {
+
+        LeerArchivo hiloLeerArchivo1 = new LeerArchivo(RUTA_ARCHIVO_ANUNCIANTES);
+        LeerArchivo hiloLeerArchivo2 = new LeerArchivo(RUTA_ARCHIVO_COMPRADORES);
+        LeerArchivo hiloLeerArchivo3 = new LeerArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES);
+        LeerArchivo hiloLeerArchivo4 = new LeerArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES);
+        LeerArchivo hiloLeerArchivo5 = new LeerArchivo(RUTA_ARCHIVO_MENSAJES);
+        LeerArchivo hiloLeerArchivo6 = new LeerArchivo(RUTA_ARCHIVO_CHATS);
+
+        hiloLeerArchivo1.start();
+        hiloLeerArchivo1.join();
+        hiloLeerArchivo2.start();
+        hiloLeerArchivo2.join();
+        hiloLeerArchivo3.start();
+        hiloLeerArchivo3.join();
+        hiloLeerArchivo4.start();
+        hiloLeerArchivo4.join();
+        hiloLeerArchivo5.start();
+        hiloLeerArchivo5.join();
+        hiloLeerArchivo6.start();
+        hiloLeerArchivo6.join();
+
         ArrayList<Usuario> listaUsuario = new ArrayList<>();
-        ArrayList<String> listaAnunciantes = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_ANUNCIANTES);
-        ArrayList<String> listaCompradores = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_COMPRADORES);
-        ArrayList<String> listaProductos = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES);
-        ArrayList<String> listaPujas = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES);
-        ArrayList<String> listaMensajes = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_MENSAJES);
+        ArrayList<String> listaChats = hiloLeerArchivo6.getContenido();
+        ArrayList<String> listaAnunciantes = hiloLeerArchivo1.getContenido();
+        ArrayList<String> listaCompradores = hiloLeerArchivo2.getContenido();
+        ArrayList<String> listaProductos = hiloLeerArchivo3.getContenido();
+        ArrayList<String> listaPujas = hiloLeerArchivo4.getContenido();
+        ArrayList<String> listaMensajes = hiloLeerArchivo5.getContenido();
+
+        // ArrayList<Usuario> listaUsuario = new ArrayList<>();
+        // ArrayList<String> listaAnunciantes = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_ANUNCIANTES);
+        // ArrayList<String> listaCompradores = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_COMPRADORES);
+        // ArrayList<String> listaProductos = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PRODUCTOS_ANUNCIANTES);
+        // ArrayList<String> listaPujas = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PUJAS_COMPRADORES);
+        // ArrayList<String> listaMensajes = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_MENSAJES);
 
         for(String anuncianteCargado : listaAnunciantes){
             Usuario usuario = new Usuario();
@@ -416,22 +568,41 @@ public class Persistencia {
             listaUsuario.add(usuario);
         }
 
+        for(String chatCargado : listaChats){
+            Chat chat = new Chat();
+            Scanner scanner = new Scanner(chatCargado);
+            scanner.useDelimiter("@@");
+            while (scanner.hasNext()){
+                chat.setUsuario(scanner.next());
+                chat.setUsuarioRemitente(scanner.next());
+                chat.setUsuarioDestinatario(scanner.next());
+            }
+            for(Usuario usuario : listaUsuario){
+                if(usuario.getUsuario().equals(chat.getUsuario())){
+                    usuario.getListaChats().add(chat);
+                    break;
+                }
+            }
+        }
+
         for(String mensajeCargado : listaMensajes){
             Mensaje mensaje = new Mensaje();
-            String usuarioAux = "";
             Scanner scanner = new Scanner(mensajeCargado);
             scanner.useDelimiter("@@");
             while (scanner.hasNext()){
-                mensaje.setEsRecibido(Boolean.parseBoolean(scanner.next()));
                 mensaje.setUsuario(scanner.next());
+                mensaje.setUsuarioRemitente(scanner.next());
+                mensaje.setUsuarioDestinatario(scanner.next());
+                mensaje.setMessage(scanner.next());
                 LocalDateTime localDateTime = LocalDateTime.parse(scanner.next());
                 mensaje.setFecha(localDateTime);
-                usuarioAux = scanner.next();
             }
             for(Usuario usuario : listaUsuario){
-                if(usuario.getUsuario().equals(usuarioAux)){
-                    usuario.getListaMensajes().add(mensaje);
-                    break;
+                for(Chat chat : usuario.getListaChats()){
+                    if(chat.getUsuario().equals(mensaje.getUsuario())){
+                        chat.getListaMensajes().add(mensaje);
+                        break;
+                    }
                 }
             }
         }
@@ -445,10 +616,23 @@ public class Persistencia {
      * @return Lista de productos cargados
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    public static ArrayList<Producto> cargarProductos() throws IOException{
+    public static ArrayList<Producto> cargarProductos() throws IOException, InterruptedException {
+
+        LeerArchivo hiloLeerArchivo1 = new LeerArchivo(RUTA_ARCHIVO_PRODUCTOS);
+        LeerArchivo hiloLeerArchivo2 = new LeerArchivo(RUTA_ARCHIVO_PUJAS);
+
+        hiloLeerArchivo1.start();
+        hiloLeerArchivo1.join();
+        hiloLeerArchivo2.start();
+        hiloLeerArchivo2.join();
+
         ArrayList<Producto> listaProducto = new ArrayList<>();
-        ArrayList<String> productos = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PRODUCTOS);
-        ArrayList<String> pujas = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PUJAS);
+        ArrayList<String> productos = hiloLeerArchivo1.getContenido();
+        ArrayList<String> pujas = hiloLeerArchivo2.getContenido();
+
+        // ArrayList<Producto> listaProducto = new ArrayList<>();
+        // ArrayList<String> productos = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PRODUCTOS);
+        // ArrayList<String> pujas = ArchivoUtil.leerArchivo(RUTA_ARCHIVO_PUJAS);
 
         for(String productoCargado : productos){
             Producto producto = new Producto();
@@ -493,8 +677,14 @@ public class Persistencia {
      * @param nivel Nivel del registro
      * @param accion La accion que se realiza
      */
-    public static void guardaRegistroLog(String mensajeLog, int nivel, String accion) {
-        ArchivoUtil.guardarRegistroLog(mensajeLog, nivel, accion, RUTA_ARCHIVO_LOG);
+    public static void guardaRegistroLog(String mensajeLog, int nivel, String accion) throws InterruptedException {
+
+        GuardarRegistroLog hiloGuardarRegistroLog = new GuardarRegistroLog(mensajeLog, nivel, accion, RUTA_ARCHIVO_LOG);
+
+        hiloGuardarRegistroLog.start();
+        hiloGuardarRegistroLog.join();
+
+        // ArchivoUtil.guardarRegistroLog(mensajeLog, nivel, accion, RUTA_ARCHIVO_LOG);
     }
 
     /**
@@ -505,7 +695,7 @@ public class Persistencia {
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      * @throws UserNotFoundException En caso de que el usuario no sea encontrado en la lista de usuarios
      */
-    public static Usuario iniciarSesion(String usuario, String contrasenia) throws  IOException, UserNotFoundException {
+    public static Usuario iniciarSesion(String usuario, String contrasenia) throws IOException, UserNotFoundException, InterruptedException {
         if(validarUsuario(usuario, contrasenia) != null) {
             return validarUsuario(usuario, contrasenia);
         }else {
@@ -520,7 +710,7 @@ public class Persistencia {
      * @return Usuario logueado
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
-    private static Usuario validarUsuario(String usuario, String contrasenia) throws IOException {
+    private static Usuario validarUsuario(String usuario, String contrasenia) throws IOException, InterruptedException {
         ArrayList<Usuario> usuarios = Persistencia.cargarUsuarios();
 
         for (Usuario usuarioAux : usuarios) {
@@ -538,7 +728,15 @@ public class Persistencia {
     public static SubastasQuindio cargarRecursoCasaBinario() {
         SubastasQuindio subastasQuindio = null;
         try {
-            subastasQuindio = (SubastasQuindio)ArchivoUtil.cargarRecursoSerializado(RUTA_ARCHIVO_MODELO_CASA_BINARIO);
+            
+            CargarRecursoSerializado hiloCargarRecursoSerializado = new CargarRecursoSerializado(RUTA_ARCHIVO_MODELO_CASA_BINARIO);
+
+            hiloCargarRecursoSerializado.start();
+            hiloCargarRecursoSerializado.join();
+
+            subastasQuindio = (SubastasQuindio)hiloCargarRecursoSerializado.getAux();
+
+            // subastasQuindio = (SubastasQuindio)ArchivoUtil.cargarRecursoSerializado(RUTA_ARCHIVO_MODELO_CASA_BINARIO);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -551,7 +749,13 @@ public class Persistencia {
      */
     public static void guardarRecursoCasaBinario(SubastasQuindio subastasQuindio) {
         try {
-            ArchivoUtil.salvarRecursoSerializado(RUTA_ARCHIVO_MODELO_CASA_BINARIO, subastasQuindio);
+
+            SalvarRecursoSerializado hiloSalvarRecursoSerializado = new SalvarRecursoSerializado(RUTA_ARCHIVO_MODELO_CASA_BINARIO, subastasQuindio);
+
+            hiloSalvarRecursoSerializado.start();
+            hiloSalvarRecursoSerializado.join();
+
+            // ArchivoUtil.salvarRecursoSerializado(RUTA_ARCHIVO_MODELO_CASA_BINARIO, subastasQuindio);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -563,7 +767,13 @@ public class Persistencia {
      */
     public static void guardarRecursoCasaBinarioRespaldo(SubastasQuindio subastasQuindio) {
         try {
-            ArchivoUtil.salvarRecursoSerializado(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("model")+".dat", subastasQuindio);
+
+            SalvarRecursoSerializado hiloSalvarRecursoSerializado = new SalvarRecursoSerializado(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("model")+".dat", subastasQuindio);
+
+            hiloSalvarRecursoSerializado.start();
+            hiloSalvarRecursoSerializado.join();
+
+            // ArchivoUtil.salvarRecursoSerializado(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("model")+".dat", subastasQuindio);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -576,7 +786,15 @@ public class Persistencia {
     public static SubastasQuindio cargarRecursoCasaXML() {
         SubastasQuindio subastasQuindio = null;
         try {
-            subastasQuindio = (SubastasQuindio)ArchivoUtil.cargarRecursoSerializadoXML(RUTA_ARCHIVO_MODELO_CASA_XML);
+
+            CargarRecursoXML hiloCargarRecursoSerializado = new CargarRecursoXML(RUTA_ARCHIVO_MODELO_CASA_XML);
+
+            hiloCargarRecursoSerializado.start();
+            hiloCargarRecursoSerializado.join();
+
+            subastasQuindio = (SubastasQuindio)hiloCargarRecursoSerializado.getObjetoXML();
+
+            // subastasQuindio = (SubastasQuindio)ArchivoUtil.cargarRecursoSerializadoXML(RUTA_ARCHIVO_MODELO_CASA_XML);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -589,7 +807,13 @@ public class Persistencia {
      */
     public static void guardarRecursoCasaXML(SubastasQuindio subastasQuindio) {
         try {
-            ArchivoUtil.salvarRecursoSerializadoXML(RUTA_ARCHIVO_MODELO_CASA_XML, subastasQuindio);
+
+            SalvarRecursoXML hiloSalvarRecursoXML = new SalvarRecursoXML(RUTA_ARCHIVO_MODELO_CASA_XML, subastasQuindio);
+
+            hiloSalvarRecursoXML.start();
+            hiloSalvarRecursoXML.join();
+
+            // ArchivoUtil.salvarRecursoSerializadoXML(RUTA_ARCHIVO_MODELO_CASA_XML, subastasQuindio);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -601,8 +825,15 @@ public class Persistencia {
      */
     public static void guardarRecursoCasaXMLRespaldo(SubastasQuindio subastasQuindio) {
         try {
-            ArchivoUtil.salvarRecursoSerializadoXML(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("model")+".xml",
+
+            SalvarRecursoXML hiloSalvarRecursoXML = new SalvarRecursoXML(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("model")+".xml",
                     subastasQuindio);
+
+            hiloSalvarRecursoXML.start();
+            hiloSalvarRecursoXML.join();
+
+            // ArchivoUtil.salvarRecursoSerializadoXML(RUTA_ARCHIVOS_RESPALDO+getFileSaveName("model")+".xml",
+            //         subastasQuindio);
         } catch (Exception e) {
             e.printStackTrace();
         }

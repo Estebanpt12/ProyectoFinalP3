@@ -1,0 +1,2 @@
+oct. 10, 2022 9:24:20 P. M. co.edu.uniquindio.casasubastas.persistencia.ArchivoUtil guardarRegistroLog
+GRAVE: wasd,Hola mundo,2022-10-10

@@ -19,4 +19,7 @@ module co.edu.uniquindio.casasubastas {
     opens co.edu.uniquindio.casasubastas.application to javafx.fxml;
     exports co.edu.uniquindio.casasubastas.model;
     exports co.edu.uniquindio.casasubastas.exceptions;
+
+    exports co.edu.uniquindio.servidor.application;
+    opens co.edu.uniquindio.servidor.application to javafx.fxml;
 }

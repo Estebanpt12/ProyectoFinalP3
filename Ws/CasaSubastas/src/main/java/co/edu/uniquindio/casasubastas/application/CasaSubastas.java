@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+
 public class CasaSubastas extends Application {
     @Override
     public void start(Stage stage) throws IOException {
@@ -24,4 +25,5 @@ public class CasaSubastas extends Application {
     public static void main(String[] args) {
         launch();
     }
+    
 }

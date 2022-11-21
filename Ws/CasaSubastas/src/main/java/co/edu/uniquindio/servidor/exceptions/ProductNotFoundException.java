@@ -1,4 +1,4 @@
-package co.edu.uniquindio.casasubastas.exceptions;
+package co.edu.uniquindio.servidor.exceptions;
 
 public class ProductNotFoundException extends Exception{
 

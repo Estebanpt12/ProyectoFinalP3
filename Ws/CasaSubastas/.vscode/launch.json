@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense para saber los atributos posibles.
+    // Mantenga el puntero para ver las descripciones de los existentes atributos.
+    // Para más información, visite: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch CasaSubastas",
+            "request": "launch",
+            "mainClass": "co.edu.uniquindio.casasubastas/co.edu.uniquindio.casasubastas.application.CasaSubastas",
+            "projectName": "CasaSubastas"
+        },
+        {
+            "type": "java",
+            "name": "Launch Persistencia",
+            "request": "launch",
+            "mainClass": "co.edu.uniquindio.casasubastas/co.edu.uniquindio.casasubastas.persistencia.Persistencia",
+            "projectName": "CasaSubastas"
+        }
+    ]
+}

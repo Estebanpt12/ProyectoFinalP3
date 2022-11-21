@@ -1,11 +1,12 @@
 package co.edu.uniquindio.casasubastas.controllers;
 
+import co.edu.uniquindio.casasubastas.cliente.Cliente;
 import co.edu.uniquindio.casasubastas.exceptions.*;
+import co.edu.uniquindio.casasubastas.model.Chat;
 import co.edu.uniquindio.casasubastas.model.Producto;
 import co.edu.uniquindio.casasubastas.model.Puja;
 import co.edu.uniquindio.casasubastas.model.SubastasQuindio;
 import co.edu.uniquindio.casasubastas.model.Usuario;
-import co.edu.uniquindio.casasubastas.persistencia.Persistencia;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -80,37 +81,42 @@ public class ModelFactoryController {
      */
     private void cargarDatosDesdeArchivos() {
         subastasQuindio = new SubastasQuindio();
-        try {
-            subastasQuindio.setProductos(Persistencia.cargarProductos());
-            subastasQuindio.setUsuarios(Persistencia.cargarUsuarios());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Cliente cliente = new Cliente(1); //Cargar datos desde txt
+        cliente.iniciarCliente();
+        subastasQuindio = cliente.getSubastasQuindio();
     }
 
     /**
      * Metodo para cargar el recurso binario
      */
     public void cargarResourceBinario() {
-        subastasQuindio = Persistencia.cargarRecursoCasaBinario();
+        Cliente cliente = new Cliente(2);
+        cliente.iniciarCliente();
+        subastasQuindio = cliente.getSubastasQuindio();
     }
     /**
      *Metodo para guardar el resource binario
      */
     public void guardarResourceBinario() {
-        Persistencia.guardarRecursoCasaBinario(subastasQuindio);
+        Cliente cliente = new Cliente(4);
+        cliente.setSubastasQuindio(subastasQuindio);
+        cliente.iniciarCliente();
     }
     /**
      *Metodo para cargar el recurso XML
      */
     public void cargarResourceXML() {
-        subastasQuindio = Persistencia.cargarRecursoCasaXML();
+        Cliente cliente = new Cliente(3);
+        cliente.iniciarCliente();
+        subastasQuindio = cliente.getSubastasQuindio();
     }
     /**
      *Metodo para guardar recurso XML
      */
     public void guardarResourceXML() {
-        Persistencia.guardarRecursoCasaXML(subastasQuindio);
+        Cliente cliente = new Cliente(5);
+        cliente.setSubastasQuindio(subastasQuindio);
+        cliente.iniciarCliente();
     }
     /**
      *Metodo getter para la casa de subastas
@@ -128,28 +134,17 @@ public class ModelFactoryController {
      *Metodo para guardar el respaldo
      */
     public void guardarRespaldo(){
-        try {
-            Persistencia.guardarUsuariosRespaldo(subastasQuindio.getUsuarios());
-            Persistencia.guardarProductosRespaldo(subastasQuindio.getProductos());
-            Persistencia.guardarRecursoCasaBinarioRespaldo(subastasQuindio);
-            Persistencia.guardarRecursoCasaXMLRespaldo(subastasQuindio);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        Cliente cliente = new Cliente(6);
+        cliente.setSubastasQuindio(subastasQuindio);
+        cliente.iniciarCliente();
     }
     /**
      *Metodo para guardar la casa de subastas
      */
     public void guardarSubastasQuindio(){
-        try {
-            Persistencia.guardarProductos(subastasQuindio.getProductos());
-            Persistencia.guardarUsuarios(subastasQuindio.getUsuarios());
-            Persistencia.guardarRecursoCasaXML(subastasQuindio);
-            Persistencia.guardarRecursoCasaBinario(subastasQuindio);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Cliente cliente = new Cliente(7);
+        cliente.setSubastasQuindio(subastasQuindio);
+        cliente.iniciarCliente();
     }
 
     /**
@@ -222,7 +217,9 @@ public class ModelFactoryController {
      * @param accion Accion realizada que se guardará en el log
      */
     public void crearRegistroLog(String mensajeLog, int nivel, String accion){
-        Persistencia.guardaRegistroLog(mensajeLog, nivel, accion);
+        Cliente cliente = new Cliente(8);
+        cliente.setLog(mensajeLog+","+nivel+","+accion);
+        cliente.iniciarCliente();
     }
     /**
      *Metodo para iniciar sesion
@@ -232,7 +229,13 @@ public class ModelFactoryController {
      * @throws IOException Excepcion que se presenta si se presenta errores al manipular el archivo
      */
     public void iniciarSesion(String usuario, String contrasenia) throws UserNotFoundException, IOException {
-        usuarioLogeado = Persistencia.iniciarSesion(usuario, contrasenia);
+        Cliente cliente = new Cliente(9);
+        cliente.setCrendenciales(usuario+","+contrasenia);
+        cliente.iniciarCliente();
+        usuarioLogeado = cliente.getUsuario();
+        if(usuarioLogeado == null){
+            throw new UserNotFoundException("Error en la combinacion de usuario y contraseña");
+        }
         crearRegistroLog("El usuario "+ usuario +" ha iniciado sesion", 1, "Login");
     }
     /**
@@ -259,7 +262,10 @@ public class ModelFactoryController {
      */
     public void eliminarPuja(String nombreProducto, Puja p) throws BidNotFoundException, ProductNotFoundException, IOException {
         Puja puja = subastasQuindio.eliminarPuja(nombreProducto, p);
-        Persistencia.guardarPujaEliminada(puja, nombreProducto);
+        Cliente cliente = new Cliente(10);
+        cliente.setPuja(puja);
+        cliente.setNombreProducto(nombreProducto);
+        cliente.iniciarCliente();
         crearRegistroLog("El usuario "+usuarioLogeado.getUsuario()+" ha eliminado la puja a el producto "
                 +nombreProducto+" con valor de"+puja.getValor()+" hecha en la fecha "+ puja.getFecha(), 2,
                 "Eliminar puja");
@@ -291,7 +297,9 @@ public class ModelFactoryController {
      */
     public void eliminarProducto(String tipoProducto, String nombre) throws ProductNotFoundException, IOException {
         Producto producto = subastasQuindio.eliminarProducto(tipoProducto, nombre);
-        Persistencia.guardarProductoEliminado(producto);
+        Cliente cliente = new Cliente(11);
+        cliente.setProducto(producto);
+        cliente.iniciarCliente();
         crearRegistroLog("El producto "+nombre+" que pertenece al tipo "+tipoProducto+" ha sido eliminado", 2,
                 "Eliminar producto");
         guardarSubastasQuindio();
@@ -327,13 +335,26 @@ public class ModelFactoryController {
      * @param codigoUsuarioDestinatario Codigo del destinatario del mensaje
      * */
     public void crearMensaje(String mensaje, String codigoUsuarioDestinatario){
-        subastasQuindio.crearMensajeEnviado(usuarioLogeado.getUsuario(), codigoUsuarioDestinatario, mensaje);
-        subastasQuindio.crearMensajeRecibido(usuarioLogeado.getUsuario(),codigoUsuarioDestinatario,mensaje);
+        subastasQuindio.crearMensaje(usuarioLogeado.getUsuario(),usuarioLogeado.getUsuario(), codigoUsuarioDestinatario, mensaje);
+        subastasQuindio.crearMensaje(codigoUsuarioDestinatario,usuarioLogeado.getUsuario(),codigoUsuarioDestinatario,mensaje);
         crearRegistroLog("El mensaje enviado por "+usuarioLogeado.getUsuario()+" a "+ codigoUsuarioDestinatario+
                         " ha sido creado", 1, "crearMensaje");
         guardarSubastasQuindio();
         guardarRespaldo();
     }
+    
+    public void crearChat(String UsuarioDestinatario) {
+        subastasQuindio.crearChat(usuarioLogeado.getUsuario(),usuarioLogeado.getUsuario(), UsuarioDestinatario);
+        subastasQuindio.crearChat(UsuarioDestinatario, UsuarioDestinatario, usuarioLogeado.getUsuario());
+        crearRegistroLog("El chat de "+usuarioLogeado.getUsuario()+" a "+ UsuarioDestinatario+" ha sido creado", 1, "crearChat");
+        guardarSubastasQuindio();
+        guardarRespaldo();
+    }
+
+    public ArrayList<Chat> obtenerChats(String usuario) {
+        return subastasQuindio.obtenerChats(usuario);
+    }
+
 
     /**
      * Metodo para retornar la lista de productos de un usuario
